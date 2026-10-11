@@ -1,0 +1,1611 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Registre non officiel du lore de Warframe : frise chronologique interactive, carte du système Origine, archives, index des personnages et Warframes.">
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content="Archives Orokin">
+<meta property="og:description" content="Le lore de Warframe remis dans l'ordre : chronologie, carte, archives et index.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23000'/%3E%3Cg fill='none' stroke='%23f0bd4f' stroke-width='2'%3E%3Ccircle cx='20' cy='20' r='16'/%3E%3Crect x='10' y='10' width='20' height='20' transform='rotate(45 20 20)'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='4' fill='%23ffe9b0'/%3E%3C/svg%3E">
+<title>Archives Orokin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aboreto&family=Michroma&family=Saira+Semi+Condensed:wght@300;400;500;600&family=Share+Tech+Mono&display=swap">
+<style>
+/* Layout : console du Vitruvien — fond Néant absolu, panneaux holographiques ouverts et biseautés, lueur dorée, glyphes orokin vivants en arrière-plan */
+:root{
+  --void:#000;
+  --deep:#07060a;
+  --fill:rgba(18,15,9,.78);
+  --edge:#5c4a1e;
+  --gold:#f0bd4f;
+  --gold-hi:#ffe9b0;
+  --ink:#ece5d3;
+  --mute:#9b917a;
+  --bloom:0 0 4px rgba(255,214,120,.75),0 0 14px rgba(245,184,60,.45),0 0 36px rgba(230,160,40,.22);
+  --bloom-sm:0 0 3px rgba(255,214,120,.6),0 0 10px rgba(245,184,60,.3);
+  --f-display:"Aboreto","Federo","Didot",serif;
+  --f-ui:"Michroma","Saira Semi Condensed",system-ui,sans-serif;
+  --f-body:"Saira Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-mono:"Share Tech Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--void)}
+body{background:var(--void);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;margin:0;min-height:100%;position:relative;overflow-x:hidden}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding-inline:clamp(16px,4vw,40px);padding-block:0 64px}
+a{color:var(--gold-hi)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:1px solid var(--gold-hi);outline-offset:3px}
+
+/* ---------- primitives : biseau, parallélogramme, cadre holo ---------- */
+.bv{--c:12px;--e:var(--edge);--f:var(--fill);position:relative;isolation:isolate;background:var(--e);border:none;
+  clip-path:polygon(var(--c) 0,100% 0,100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,0 100%,0 var(--c))}
+.bv::before{content:"";position:absolute;inset:1px;z-index:-1;background:var(--f);
+  clip-path:polygon(calc(var(--c) - .4px) 0,100% 0,100% calc(100% - var(--c) + .4px),calc(100% - var(--c) + .4px) 100%,0 100%,0 calc(var(--c) - .4px))}
+.pg{--s:9px;--e:var(--edge);--f:rgba(10,8,4,.6);position:relative;isolation:isolate;background:var(--e);border:none;
+  clip-path:polygon(var(--s) 0,100% 0,calc(100% - var(--s)) 100%,0 100%)}
+.pg::before{content:"";position:absolute;inset:1px;z-index:-1;background:var(--f);
+  clip-path:polygon(var(--s) 0,100% 0,calc(100% - var(--s)) 100%,0 100%)}
+.holo{--b:var(--gold);--k:16px;position:relative;
+  background:
+   linear-gradient(var(--b),var(--b)) top left/var(--k) 1px no-repeat,
+   linear-gradient(var(--b),var(--b)) top left/1px var(--k) no-repeat,
+   linear-gradient(var(--b),var(--b)) bottom right/var(--k) 1px no-repeat,
+   linear-gradient(var(--b),var(--b)) bottom right/1px var(--k) no-repeat,
+   linear-gradient(90deg,rgba(240,189,79,.35),transparent 40%) top left/100% 1px no-repeat,
+   radial-gradient(120% 90% at 0 0,rgba(240,189,79,.07),transparent 60%),
+   rgba(8,7,4,.55)}
+
+/* ---------- en-tête ---------- */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:linear-gradient(#000 65%,transparent);padding-block:14px 20px}
+.bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--gold-hi)}
+.brand svg{flex:none;filter:drop-shadow(0 0 4px rgba(255,200,90,.8))}
+.brand b{font-family:var(--f-display);font-weight:400;letter-spacing:.24em;font-size:15px;text-shadow:var(--bloom-sm)}
+nav.rooms{display:flex;gap:2px;flex-wrap:wrap}
+nav.rooms button{--s:11px;padding:7px 22px;font-family:var(--f-ui);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);cursor:pointer;transition:color .2s}
+nav.rooms button:hover{--e:var(--gold);color:var(--gold-hi)}
+nav.rooms button[aria-selected="true"]{--e:var(--gold-hi);--f:linear-gradient(180deg,rgba(240,189,79,.28),rgba(240,189,79,.06));color:var(--gold-hi);text-shadow:var(--bloom)}
+.sound{--c:7px;display:flex;align-items:center;gap:8px;padding:6px 13px;font-family:var(--f-mono);font-size:12px;color:var(--mute);cursor:pointer;letter-spacing:.06em}
+.sound[aria-pressed="true"]{--e:var(--gold);color:var(--gold-hi)}
+.sound i{width:6px;height:6px;transform:rotate(45deg);background:var(--edge);display:inline-block}
+.sound[aria-pressed="true"] i{background:var(--gold-hi);box-shadow:0 0 6px var(--gold),0 0 14px var(--gold)}
+
+/* ---------- héros ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:24px;align-items:center;padding-block:20px 34px;position:relative}
+.hero::after{content:"";position:absolute;left:0;right:22%;bottom:0;height:1px;background:linear-gradient(90deg,var(--gold),rgba(240,189,79,.2) 60%,transparent);box-shadow:var(--bloom-sm)}
+.eyebrow{font-family:var(--f-ui);font-size:10px;letter-spacing:.32em;color:var(--gold);text-transform:uppercase;text-shadow:var(--bloom-sm)}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(32px,5.6vw,62px);line-height:1.08;margin:.35em 0 .1em;letter-spacing:.07em;text-wrap:balance;color:var(--gold-hi);text-shadow:var(--bloom)}
+h1 em{font-style:normal;color:#fff6dc;letter-spacing:.14em}
+.sweep{display:block;height:9px;margin:8px 0 2px;max-width:520px;overflow:visible}
+.glyphs{display:block;height:17px;margin:6px 0 18px;color:var(--gold);overflow:hidden;position:relative;
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 70%,transparent);mask-image:linear-gradient(90deg,#000 0,#000 70%,transparent)}
+.glyphs svg{height:100%;width:auto;max-width:none;filter:drop-shadow(0 0 2px rgba(255,205,100,.9)) drop-shadow(0 0 6px rgba(240,170,50,.5))}
+.glyphs .gl{opacity:.55;animation:flick 6s infinite steps(1)}
+@keyframes flick{0%{opacity:.55}3%{opacity:1}5%{opacity:.25}8%{opacity:.55}}
+.glyphs::after{content:"";position:absolute;top:0;bottom:0;width:60px;left:0;transform:translateX(-60px);will-change:transform;background:linear-gradient(90deg,transparent,rgba(255,233,176,.55),transparent);mix-blend-mode:screen;animation:scan 5.5s linear infinite}
+@keyframes scan{to{transform:translateX(560px)}}
+.lede{max-width:56ch;color:var(--ink);font-weight:300;font-size:18px;margin:0}
+.stats{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
+.stats div{--k:12px;padding:10px 18px 10px 16px;min-width:120px}
+.stats b{display:block;font-family:var(--f-display);font-weight:400;font-size:28px;color:var(--gold-hi);font-variant-numeric:tabular-nums;text-shadow:var(--bloom);letter-spacing:.06em}
+.stats span{font-family:var(--f-ui);font-size:9px;color:var(--mute);letter-spacing:.24em;text-transform:uppercase}
+.seal{width:100%;max-width:440px;aspect-ratio:1;justify-self:center;display:block}
+
+/* ---------- sections ---------- */
+section.room{padding-top:38px}
+.room-head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:18px}
+h2{font-family:var(--f-display);font-weight:400;font-size:clamp(22px,3.2vw,32px);letter-spacing:.12em;margin:0;color:var(--gold-hi);text-wrap:balance;text-shadow:var(--bloom)}
+.room-head p{margin:4px 0 0;color:var(--mute);max-width:60ch}
+.chips{display:flex;gap:3px;flex-wrap:wrap}
+.chip{--s:8px;color:var(--mute);padding:5px 16px;font-size:13px;cursor:pointer;letter-spacing:.04em}
+.chip:hover{--e:var(--gold);color:var(--ink)}
+.chip[aria-pressed="true"]{--e:var(--gold-hi);--f:rgba(240,189,79,.16);color:var(--gold-hi);text-shadow:var(--bloom-sm)}
+
+/* ---------- chronologie ---------- */
+.tl-scroll{--c:18px;overflow-x:auto;scrollbar-color:var(--gold) #000;--f:linear-gradient(180deg,rgba(14,11,5,.85),rgba(4,3,1,.85))}
+.tl{position:relative;min-width:1500px;height:214px}
+.tl .eraband{position:absolute;top:0;bottom:0;padding:12px 14px;background:linear-gradient(180deg,transparent 20%,rgba(240,189,79,.25) 50%,transparent 80%) right/1px 100% no-repeat}
+.tl .eraband span{font-family:var(--f-ui);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);text-shadow:var(--bloom-sm)}
+.tl .eraband small{display:block;font-family:var(--f-mono);font-size:11px;color:var(--mute)}
+.tl .axis{position:absolute;left:0;right:0;top:120px;height:1px;background:linear-gradient(90deg,transparent,var(--gold) 3%,var(--gold-hi) 50%,var(--gold) 97%,transparent);box-shadow:0 0 6px rgba(255,200,90,.8),0 0 18px rgba(240,170,50,.4)}
+.tl .axis::after{content:"";position:absolute;top:-1px;height:3px;width:120px;left:0;transform:translateX(-120px);will-change:transform;background:linear-gradient(90deg,transparent,#fff3cf,transparent);filter:blur(1px);animation:pulse 7s linear infinite}
+@keyframes pulse{to{transform:translateX(var(--tlw,1800px))}}
+.node{position:absolute;top:106px;width:28px;height:28px;margin-left:-14px;background:none;border:none;cursor:pointer;padding:0}
+.node::before{content:"";position:absolute;inset:8px;border:1px solid var(--gold);transform:rotate(45deg);background:#000;transition:all .2s;box-shadow:0 0 6px rgba(240,189,79,.6)}
+.node:hover::before{background:var(--gold);box-shadow:0 0 10px var(--gold),0 0 22px rgba(240,170,50,.6)}
+.node[aria-current="true"]::before{background:var(--gold-hi);inset:5px;box-shadow:0 0 10px #fff0c4,0 0 26px var(--gold),0 0 50px rgba(240,170,50,.5)}
+.node .lbl{position:absolute;left:50%;width:124px;margin-left:-62px;font-size:12px;line-height:1.25;color:var(--mute);text-align:center;pointer-events:none}
+.node.up .lbl{bottom:34px}.node.dn .lbl{top:34px}
+.node[aria-current="true"] .lbl,.node:hover .lbl{color:var(--gold-hi);text-shadow:var(--bloom-sm)}
+.node .lbl::after{content:"";position:absolute;left:50%;width:1px;background:linear-gradient(var(--gold),transparent)}
+.node.up .lbl::after{top:100%;height:7px;background:linear-gradient(transparent,var(--gold))}.node.dn .lbl::after{bottom:100%;height:7px}
+
+.detail{--k:22px;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:0;margin-top:14px}
+.detail .main{padding:26px 30px;min-width:0}
+.detail aside{padding:26px 24px;min-width:0;background:linear-gradient(180deg,transparent,rgba(240,189,79,.35),transparent) left/1px 100% no-repeat}
+.detail h3{font-family:var(--f-display);font-size:clamp(22px,3vw,30px);font-weight:400;margin:6px 0 0;color:var(--gold-hi);letter-spacing:.08em;text-wrap:balance;text-shadow:var(--bloom)}
+.detail .when{font-family:var(--f-ui);font-size:9.5px;color:var(--gold);letter-spacing:.24em;text-transform:uppercase}
+.detail p{max-width:65ch}
+.detail .sum{font-size:18px;font-weight:300}
+.lab{font-family:var(--f-ui);font-size:9px;color:var(--mute);letter-spacing:.26em;text-transform:uppercase;margin:0 0 9px}
+.srcs{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:7px}
+.srcs li{display:flex;gap:9px;font-size:14px}
+.srcs li b{font-family:var(--f-mono);font-weight:400;font-size:11px;color:#140f04;background:var(--gold);padding:1px 9px;height:fit-content;white-space:nowrap;letter-spacing:.06em;box-shadow:0 0 8px rgba(240,189,79,.5);clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%)}
+.links{display:flex;flex-wrap:wrap;gap:4px}
+.link{--s:7px;color:var(--ink);padding:4px 14px;font-size:13px;cursor:pointer}
+.link:hover{--e:var(--gold);color:var(--gold-hi);text-shadow:var(--bloom-sm)}
+.stepper{display:flex;gap:6px;margin-top:22px;flex-wrap:wrap}
+.stepper button{--s:9px;color:var(--mute);padding:7px 18px;cursor:pointer;font-family:var(--f-mono);font-size:12px;letter-spacing:.1em}
+.stepper button:hover:not(:disabled){--e:var(--gold);color:var(--gold-hi)}
+.stepper button:disabled{opacity:.3;cursor:default}
+
+/* ---------- archives ---------- */
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.search-w{--c:9px;flex:1 1 240px;min-width:0;display:flex}
+.search{flex:1;min-width:0;background:transparent;border:none;color:var(--ink);padding:9px 14px;font-family:var(--f-mono);font-size:14px}
+.search:focus{outline:none}
+.search-w:focus-within{--e:var(--gold-hi)}
+.search::placeholder{color:var(--mute)}
+.files{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.file{--c:18px;text-align:left;padding:18px 20px 16px;cursor:pointer;display:flex;flex-direction:column;gap:8px;transition:--e .2s}
+.file::after{content:"";position:absolute;top:0;right:0;width:26px;height:26px;background:linear-gradient(225deg,transparent 0 49%,var(--gold) 49% 52%,transparent 52%);opacity:.9}
+.file:hover{--e:var(--gold);--f:linear-gradient(160deg,rgba(240,189,79,.12),rgba(14,11,5,.85) 50%)}
+.file .meta{display:flex;justify-content:space-between;gap:8px;font-family:var(--f-ui);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.file h4{font-family:var(--f-display);font-weight:400;font-size:17px;margin:0;letter-spacing:.07em;color:var(--ink)}
+.file:hover h4{color:var(--gold-hi);text-shadow:var(--bloom-sm)}
+.file p{margin:0;color:var(--mute);font-size:14px}
+.file .lvl{display:flex;gap:3px;margin-top:auto;align-items:center}
+.file .lvl i{width:14px;height:3px;background:var(--edge);transform:skewX(-35deg)}
+.file .lvl i.on{background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.file .lvl span{margin-left:8px;font-family:var(--f-mono);font-size:11px;color:var(--mute)}
+.file.read h4::after{content:" ◇";color:var(--gold);font-size:13px}
+.empty{color:var(--mute);font-family:var(--f-mono);padding:30px 0}
+
+/* ---------- index ---------- */
+.idx{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.ent{--c:14px;padding:16px;text-align:left;cursor:pointer;display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start}
+.ent:hover{--e:var(--gold);--f:linear-gradient(160deg,rgba(240,189,79,.12),rgba(14,11,5,.85) 50%)}
+.ent .sig{width:44px;height:44px;color:var(--gold);filter:drop-shadow(0 0 3px rgba(255,200,90,.8))}
+.ent h4{margin:0;font-family:var(--f-display);font-size:15px;font-weight:400;color:var(--ink);letter-spacing:.07em}
+.ent:hover h4{color:var(--gold-hi);text-shadow:var(--bloom-sm)}
+.ent small{display:block;color:var(--gold);font-family:var(--f-ui);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;margin:4px 0 5px}
+.ent p{margin:0;font-size:13px;color:var(--mute);line-height:1.45}
+
+/* ---------- dossier ---------- */
+.veil{position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 30%,rgba(30,22,6,.9),rgba(0,0,0,.95));display:flex;align-items:flex-start;justify-content:center;padding:max(40px,env(safe-area-inset-top,0px)) 16px 40px;overflow-y:auto}
+.dossier{--c:28px;--e:linear-gradient(135deg,var(--gold-hi),var(--edge) 40%,var(--edge) 60%,var(--gold));--f:linear-gradient(170deg,rgba(26,20,8,.97),rgba(4,3,1,.98) 45%);width:100%;max-width:760px;padding:34px clamp(18px,4vw,44px) 32px;animation:rise .35s ease-out}
+@keyframes rise{from{opacity:0;transform:translateY(10px) scale(.985)}}
+.dossier .x{--s:8px;position:absolute;top:14px;right:16px;color:var(--mute);padding:5px 14px;cursor:pointer;font-family:var(--f-mono);font-size:12px}
+.dossier .x:hover{--e:var(--gold);color:var(--gold-hi)}
+.dossier h3{font-family:var(--f-display);font-size:clamp(22px,4vw,32px);font-weight:400;margin:8px 0 0;color:var(--gold-hi);letter-spacing:.08em;padding-right:70px;text-wrap:balance;text-shadow:var(--bloom)}
+.dossier .body p{max-width:65ch}
+.dossier .stamp{display:inline-block;color:var(--gold);font-family:var(--f-ui);font-size:9px;padding:3px 14px;letter-spacing:.24em;text-transform:uppercase;background:rgba(240,189,79,.1);clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%);text-shadow:var(--bloom-sm)}
+.kv{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.kv div{--k:10px;padding:9px 14px;flex:1 1 150px}
+.kv span{display:block;font-family:var(--f-ui);font-size:8.5px;color:var(--mute);letter-spacing:.22em;text-transform:uppercase}
+.kv b{font-weight:500;font-size:14px}
+.audio{--c:12px;padding:14px 18px;margin-top:22px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.audio .play{width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);background:radial-gradient(circle,rgba(240,189,79,.18),transparent 70%);color:var(--gold-hi);cursor:pointer;flex:none;display:grid;place-items:center;box-shadow:0 0 10px rgba(240,189,79,.5),inset 0 0 8px rgba(240,189,79,.3)}
+.audio .play:disabled{opacity:.3;cursor:default;box-shadow:none}
+.audio .txt{flex:1 1 200px;min-width:0;font-size:13px;color:var(--mute)}
+.audio .txt b{display:block;color:var(--ink);font-weight:500;font-size:14px}
+.audio label{color:var(--mute);padding:6px 16px;font-family:var(--f-mono);font-size:11px;cursor:pointer;letter-spacing:.08em;clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%);background:rgba(240,189,79,.1)}
+.audio label:hover{color:var(--gold-hi);background:rgba(240,189,79,.2)}
+.audio input{position:absolute;opacity:0;width:1px;height:1px}
+.wave{display:flex;gap:2px;height:22px;align-items:center}
+.wave i{width:2px;background:var(--gold);height:20%;transition:height .1s;box-shadow:0 0 4px var(--gold)}
+
+footer{margin-top:56px;padding-top:18px;position:relative;color:var(--mute);font-size:13px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer::before{content:"";position:absolute;top:0;left:30%;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold));box-shadow:var(--bloom-sm)}
+footer p{margin:0;max-width:70ch}
+footer .glyphs{width:220px}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr}
+  .seal{max-width:300px;grid-row:1;margin-bottom:-20px}
+  .detail{grid-template-columns:1fr}
+  .detail aside{background:linear-gradient(90deg,transparent,rgba(240,189,79,.35),transparent) top/100% 1px no-repeat}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- ajouts v3 ---------- */
+.bar-tools{display:flex;gap:6px;flex-wrap:wrap}
+kbd{font-family:var(--f-mono);font-size:10px;color:var(--mute);border:1px solid var(--edge);padding:0 5px;letter-spacing:.04em}
+#find svg{flex:none}
+@media (max-width:700px){#find span,#find kbd{display:none}}
+.stats div{min-width:110px}
+
+/* lecture guidée */
+.guide{--c:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:8px 14px;margin-bottom:10px}
+.guide button{--s:9px;padding:6px 18px;cursor:pointer;color:var(--gold-hi);font-family:var(--f-ui);font-size:10px;letter-spacing:.18em;text-transform:uppercase}
+.guide button[aria-pressed="true"]{--e:var(--gold-hi);--f:rgba(240,189,79,.2);text-shadow:var(--bloom)}
+.g-voice{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--mute);cursor:pointer}
+.g-voice input{accent-color:var(--gold)}
+.g-bar{flex:1 1 140px;height:2px;background:var(--edge);position:relative;min-width:80px}
+.g-bar i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--gold-hi);box-shadow:0 0 6px var(--gold),0 0 14px var(--gold)}
+.g-txt{font-family:var(--f-mono);font-size:12px;color:var(--mute)}
+
+/* partage */
+.share{--s:8px;margin-left:auto;padding:4px 14px;font-family:var(--f-mono);font-size:11px;color:var(--mute);cursor:pointer;letter-spacing:.08em}
+.share:hover{--e:var(--gold);color:var(--gold-hi)}
+.dz-tools{display:flex;gap:6px;align-items:center;margin-top:22px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:80;background:#000;color:var(--gold-hi);border:1px solid var(--gold);padding:8px 18px;font-family:var(--f-mono);font-size:12px;box-shadow:0 0 18px rgba(240,189,79,.35);max-width:calc(100% - 32px);word-break:break-all;clip-path:polygon(9px 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%,0 9px)}
+
+/* carte */
+.map-wrap{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;align-items:start}
+.map{--c:22px;--f:radial-gradient(circle at 50% 46%,rgba(60,42,8,.55),rgba(0,0,0,.9) 70%);min-width:0}
+.map svg{display:block;width:100%;height:auto}
+.map .orbit{fill:none;stroke:rgba(240,189,79,.22);stroke-width:1}
+.map .orbit.hot{stroke:rgba(255,220,140,.55);filter:drop-shadow(0 0 3px rgba(240,189,79,.8))}
+.map .pl{cursor:pointer;outline:none}
+.map .pl circle.core{fill:#0a0804;stroke:var(--gold);stroke-width:1.2;transition:all .2s}
+.map .pl .halo{fill:none;stroke:var(--gold-hi);stroke-width:1;opacity:0;transition:opacity .2s}
+.map .pl text{fill:var(--mute);font-family:var(--f-ui);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+.map .pl .cnt{fill:var(--gold);font-family:var(--f-mono);font-size:10px;letter-spacing:0}
+.map .pl:hover circle.core,.map .pl:focus-visible circle.core{fill:var(--gold);filter:drop-shadow(0 0 6px var(--gold))}
+.map .pl:hover text,.map .pl:focus-visible text{fill:var(--gold-hi)}
+.map .pl[aria-pressed="true"] circle.core{fill:var(--gold-hi);filter:drop-shadow(0 0 6px #fff0c4) drop-shadow(0 0 16px var(--gold))}
+.map .pl[aria-pressed="true"] .halo{opacity:1}
+.map .pl[aria-pressed="true"] text{fill:var(--gold-hi)}
+.map .sun{fill:url(#sunG)}
+.map .spin{transform-origin:500px 300px;animation:spin 90s linear infinite}
+.map .spin2{transform-origin:500px 300px;animation:spin 140s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.offrow{display:flex;flex-wrap:wrap;gap:6px;padding:0 18px 18px}
+.offrow .lab{width:100%;margin:0}
+.off{--s:9px;padding:6px 16px;font-size:13px;cursor:pointer;color:var(--ink)}
+.off:hover{--e:var(--gold);color:var(--gold-hi)}
+.off[aria-pressed="true"]{--e:var(--gold-hi);--f:rgba(240,189,79,.18);color:var(--gold-hi);text-shadow:var(--bloom-sm)}
+.place{--k:20px;padding:22px 22px 20px;min-width:0}
+.place h3{font-family:var(--f-display);font-weight:400;font-size:26px;letter-spacing:.08em;margin:4px 0 2px;color:var(--gold-hi);text-shadow:var(--bloom)}
+.place .ctrl{font-family:var(--f-ui);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.place p{color:var(--ink)}
+.evlist{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.evlist button{width:100%;text-align:left;background:none;border:none;border-left:1px solid var(--edge);padding:5px 10px;cursor:pointer;color:var(--ink);font-size:14px}
+.evlist button small{display:block;font-family:var(--f-mono);font-size:10.5px;color:var(--mute)}
+.evlist button:hover{border-left-color:var(--gold-hi);color:var(--gold-hi);background:linear-gradient(90deg,rgba(240,189,79,.1),transparent)}
+@media (max-width:900px){.map-wrap{grid-template-columns:1fr}}
+
+/* warframes */
+.wfs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.wf{--c:16px;text-align:left;cursor:pointer;padding:0;display:flex;flex-direction:column}
+.wf .plate{height:120px;position:relative;display:grid;place-items:center;background:radial-gradient(circle at 50% 60%,rgba(240,189,79,.16),transparent 65%)}
+.wf .plate svg{height:96px;width:auto;color:var(--gold);filter:drop-shadow(0 0 4px rgba(255,200,90,.7))}
+.wf .plate .no{position:absolute;top:10px;left:14px;font-family:var(--f-mono);font-size:10px;color:var(--mute)}
+.wf .txt{padding:12px 16px 16px;border-top:1px solid rgba(240,189,79,.18)}
+.wf h4{margin:0;font-family:var(--f-display);font-weight:400;font-size:19px;letter-spacing:.1em;color:var(--ink)}
+.wf small{display:block;font-family:var(--f-ui);font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:4px 0 6px}
+.wf p{margin:0;font-size:13px;color:var(--mute);line-height:1.45}
+.wf:hover{--e:var(--gold);--f:linear-gradient(160deg,rgba(240,189,79,.12),rgba(14,11,5,.85) 50%)}
+.wf:hover h4{color:var(--gold-hi);text-shadow:var(--bloom-sm)}
+
+/* recherche globale */
+#finder{align-items:flex-start;padding-top:max(80px,env(safe-area-inset-top,0px))}
+.find{--c:18px;width:100%;max-width:640px;--f:linear-gradient(170deg,rgba(26,20,8,.98),rgba(4,3,1,.98) 45%)}
+.find-in{display:flex;align-items:center;gap:12px;padding:14px 18px;color:var(--gold);border-bottom:1px solid rgba(240,189,79,.25)}
+.find-in input{flex:1;min-width:0;background:none;border:none;color:var(--ink);font-family:var(--f-body);font-size:18px}
+.find-in input:focus{outline:none}
+.find-res{max-height:min(60vh,520px);overflow-y:auto;padding:8px}
+.find-res .grp{font-family:var(--f-ui);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);padding:10px 10px 4px}
+.find-res button{display:flex;gap:10px;align-items:baseline;width:100%;text-align:left;background:none;border:none;padding:8px 10px;cursor:pointer;color:var(--ink)}
+.find-res button span{flex:1;min-width:0}
+.find-res button small{color:var(--mute);font-size:12px;display:block}
+.find-res button[aria-selected="true"],.find-res button:hover{background:linear-gradient(90deg,rgba(240,189,79,.16),transparent);color:var(--gold-hi)}
+.find-res .none{color:var(--mute);font-family:var(--f-mono);padding:16px 10px}
+
+section.room{scroll-margin-top:120px}
+input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+
+/* fluidité */
+.fade{animation:fadeUp .32s cubic-bezier(.2,.7,.2,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}}
+html.calm *,html.calm *::before,html.calm *::after{animation:none!important;transition:none!important}
+html.calm #bg{opacity:.6}
+#anim[aria-pressed="false"] i{background:var(--edge);box-shadow:none}
+#anim[aria-pressed="true"]{--e:var(--gold);color:var(--gold-hi)}
+#anim[aria-pressed="true"] i{background:var(--gold-hi);box-shadow:0 0 6px var(--gold)}
+.tl-scroll{scroll-behavior:smooth;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.files,.idx,.wfs{contain:layout paint}
+.file,.ent,.wf,.node,.link,.chip{touch-action:manipulation}
+#bg{contain:strict}#holo{contain:layout paint}
+@media (max-width:700px){#anim span{display:none}}
+
+.hero>*{min-width:0}
+.sweep{width:100%}
+
+/* textes longs & révélations */
+.detail .main p:not(.sum){color:var(--ink);opacity:.92}
+.dossier .body p.lead{font-size:17px;font-weight:300;color:var(--gold-hi)}
+.reveal{position:relative;margin-top:20px;padding:14px 16px 12px;background:linear-gradient(90deg,rgba(240,189,79,.09),transparent 70%);border-left:1px solid var(--gold)}
+.reveal .lab{color:var(--gold)}
+.keys{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.keys li{position:relative;padding-left:18px;max-width:62ch}
+.keys li::before{content:"";position:absolute;left:2px;top:.62em;width:6px;height:6px;transform:rotate(45deg);background:var(--gold-hi);box-shadow:0 0 6px var(--gold)}
+.reveal:not(.open) .keys{filter:blur(7px);user-select:none;pointer-events:none;opacity:.6}
+.reveal .unveil{--s:8px;position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);padding:6px 18px;color:var(--gold-hi);font-family:var(--f-mono);font-size:12px;cursor:pointer;white-space:nowrap;text-shadow:var(--bloom-sm)}
+.reveal.open .unveil{display:none}
+#spoil[aria-pressed="true"]{--e:var(--gold);color:var(--gold-hi)}
+#spoil[aria-pressed="true"] i{background:var(--gold-hi);box-shadow:0 0 6px var(--gold)}
+@media (max-width:700px){#spoil span{display:none}}
+
+</style>
+</head>
+<body>
+
+
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header class="top">
+    <div class="bar">
+      <a class="brand" href="#chronologie" aria-label="Archives Orokin, accueil">
+        <svg width="30" height="30" viewBox="0 0 40 40" fill="none" stroke="currentColor" style="color:var(--gold)"><circle cx="20" cy="20" r="17"/><rect x="8" y="8" width="24" height="24" transform="rotate(45 20 20)"/><circle cx="20" cy="20" r="4" fill="currentColor"/></svg>
+        <b>Archives Orokin</b>
+      </a>
+      <nav class="rooms" role="tablist" aria-label="Salles">
+        <button class="pg" role="tab" data-room="chronologie" id="tab-chronologie">Chronologie</button>
+        <button class="pg" role="tab" data-room="carte" id="tab-carte">Carte</button>
+        <button class="pg" role="tab" data-room="archives" id="tab-archives">Archives</button>
+        <button class="pg" role="tab" data-room="index" id="tab-index">Index</button>
+        <button class="pg" role="tab" data-room="warframes" id="tab-warframes">Warframes</button>
+      </nav>
+      <div class="bar-tools">
+        <button class="sound bv" id="find" aria-label="Rechercher dans tout le registre"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="5"/><path d="M11 11 15 15"/></svg><span>Rechercher</span><kbd>Ctrl K</kbd></button>
+        <button class="sound bv" id="sound" aria-pressed="false"><i></i><span>Son coupé</span></button>
+        <button class="sound bv" id="spoil" aria-pressed="false"><i></i><span>Révélations masquées</span></button>
+        <button class="sound bv" id="anim" aria-pressed="true"><i></i><span>Animations</span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Système Origine · Registre du Vitruvien</div>
+      <h1>Ce qui fut <em>avant</em> le Réveil</h1>
+      <svg class="sweep" viewBox="0 0 520 9" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sw" x1="0" x2="1"><stop offset="0" stop-color="#ffe9b0"/><stop offset=".55" stop-color="#f0bd4f" stop-opacity=".6"/><stop offset="1" stop-color="#f0bd4f" stop-opacity="0"/></linearGradient></defs><path d="M0 4.5 9 0 18 4.5 9 9Z" fill="#ffe9b0" style="filter:drop-shadow(0 0 4px #f0bd4f)"/><path d="M22 3.6H330L352 1.5 520 4.5 352 7.5 330 5.4H22Z" fill="url(#sw)"/></svg>
+      <span class="glyphs" data-glyph="avant le reveil"></span>
+      <p class="lede">Le récit de Warframe est éparpillé entre quêtes, fragments Céphalon, entrées du Codex, Leverian et transmissions. Ce registre le remet dans l'ordre : une frise des ères, une carte du système, les dossiers sources et l'index de ceux qui l'ont façonné.</p>
+      <div class="stats">
+        <div class="holo"><b id="n-ev">0</b><span>Événements</span></div>
+        <div class="holo"><b id="n-ar">0</b><span>Dossiers</span></div>
+        <div class="holo"><b id="n-en">0</b><span>Entités</span></div>
+        <div class="holo"><b id="n-wf">0</b><span>Warframes</span></div>
+      </div>
+    </div>
+    <canvas class="seal" id="holo" aria-hidden="true"></canvas>
+  </div>
+
+  <!-- CHRONOLOGIE -->
+  <section class="room" id="room-chronologie" role="tabpanel" aria-labelledby="tab-chronologie">
+    <div class="room-head">
+      <div>
+        <h2>Chronologie du système Origine</h2>
+        <span class="glyphs" data-glyph="chronologie"></span>
+        <p>La frise suit l'ordre interne de l'histoire, pas celui des sorties : The Old Peace (2025) se joue ainsi avant l'Ancienne Guerre. Les révélations majeures sont masquées par défaut.</p>
+      </div>
+      <div class="chips" id="era-chips"></div>
+    </div>
+    <div class="guide bv" id="guide">
+      <button class="pg" id="g-play" aria-pressed="false">▶ Lecture guidée</button>
+      <label class="g-voice"><input type="checkbox" id="g-voice"> Narration vocale</label>
+      <div class="g-bar" aria-hidden="true"><i id="g-fill"></i></div>
+      <span class="g-txt" id="g-txt">Parcourt la frise d'un événement à l'autre.</span>
+    </div>
+    <div class="tl-scroll bv" id="tl-scroll"><div class="tl" id="tl"></div></div>
+    <div class="detail holo" id="detail" aria-live="polite"></div>
+  </section>
+
+  <!-- CARTE -->
+  <section class="room" id="room-carte" role="tabpanel" aria-labelledby="tab-carte" hidden>
+    <div class="room-head">
+      <div>
+        <h2>Carte du système Origine</h2>
+        <span class="glyphs" data-glyph="origine"></span>
+        <p>Chaque monde affiche le nombre d'événements de la frise qui s'y déroulent. Les lieux hors orbite sont reliés au Néant.</p>
+      </div>
+    </div>
+    <div class="map-wrap">
+      <div class="map bv" id="map"></div>
+      <div class="place holo" id="place" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ARCHIVES -->
+  <section class="room" id="room-archives" role="tabpanel" aria-labelledby="tab-archives" hidden>
+    <div class="room-head">
+      <div>
+        <h2>Archives classifiées</h2>
+        <span class="glyphs" data-glyph="archives"></span>
+        <p>Chaque dossier décrit une source du jeu, ce qu'elle révèle et où la trouver. Le niveau indique à quel point l'information est enfouie. Les dossiers déjà ouverts sont marqués ◇.</p>
+      </div>
+    </div>
+    <div class="tools">
+      <div class="search-w bv"><input class="search" id="ar-q" type="search" placeholder="Filtrer : Margulis, Kuva, Zariman…" aria-label="Filtrer les archives"></div>
+      <div class="chips" id="ar-chips"></div>
+    </div>
+    <div class="files" id="files"></div>
+  </section>
+
+  <!-- INDEX -->
+  <section class="room" id="room-index" role="tabpanel" aria-labelledby="tab-index" hidden>
+    <div class="room-head">
+      <div>
+        <h2>Index des personnages et factions</h2>
+        <span class="glyphs" data-glyph="index"></span>
+        <p>Chaque fiche renvoie aux événements de la chronologie où l'entité apparaît. Les fiches de personnages ont un emplacement audio pour y charger vos propres extraits.</p>
+      </div>
+    </div>
+    <div class="tools">
+      <div class="search-w bv"><input class="search" id="en-q" type="search" placeholder="Filtrer : Ballas, Corpus, Sentient…" aria-label="Filtrer l'index"></div>
+      <div class="chips" id="en-chips"></div>
+    </div>
+    <div class="idx" id="idx"></div>
+  </section>
+
+  <!-- WARFRAMES -->
+  <section class="room" id="room-warframes" role="tabpanel" aria-labelledby="tab-warframes" hidden>
+    <div class="room-head">
+      <div>
+        <h2>Galerie des Warframes</h2>
+        <span class="glyphs" data-glyph="warframes"></span>
+        <p>Les Warframes dont l'histoire est racontée dans le jeu, par une quête, le Leverian ou le Codex. Chaque fiche renvoie à sa quête et aux événements qu'elle éclaire.</p>
+      </div>
+    </div>
+    <div class="tools">
+      <div class="search-w bv"><input class="search" id="wf-q" type="search" placeholder="Filtrer : Inaros, Faille, Duviri…" aria-label="Filtrer les Warframes"></div>
+    </div>
+    <div class="wfs" id="wfs"></div>
+  </section>
+
+  <footer>
+    <p>Projet de fans non officiel. Warframe et tous ses éléments appartiennent à Digital Extremes. Les textes de ce registre sont des résumés rédigés pour le site ; aucun dialogue du jeu n'y est reproduit.</p>
+    <p class="glyphs" data-glyph="tenno"></p>
+  </footer>
+</div>
+
+<div class="veil" id="veil" hidden><div class="dossier bv" id="dossier" role="dialog" aria-modal="true" aria-labelledby="dz-title"></div></div>
+
+<div class="veil" id="finder" hidden>
+  <div class="find bv" role="dialog" aria-modal="true" aria-label="Recherche globale">
+    <div class="find-in"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="5"/><path d="M11 11 15 15"/></svg>
+      <input id="find-q" type="search" placeholder="Événement, personnage, Warframe, planète…" aria-label="Rechercher" autocomplete="off"><kbd>Échap</kbd></div>
+    <div class="find-res" id="find-res" role="listbox"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+/* ================= DONNÉES =================
+   EVENTS : body = paragraphes ; keys = révélations (masquables) ; links → ENT ; place → PLACES
+   Sources vérifiées sur wiki.warframe.com (octobre 2026). Textes = résumés rédigés. */
+const ERAS=[
+ {id:"orokin",label:"Âge d'or Orokin",sub:"Empire & Zariman"},
+ {id:"guerre",label:"Paix et Ancienne Guerre",sub:"Tau, Sentients, Tenno"},
+ {id:"chute",label:"L'Effondrement",sub:"La Réconciliation"},
+ {id:"eveil",label:"Le Réveil",sub:"Contenus 2014–2020"},
+ {id:"nouvelle",label:"Nouvelle Guerre et au-delà",sub:"Contenus 2021–2026"}
+];
+
+const EVENTS=[
+ /* ---------- ÂGE D'OR ---------- */
+ {id:"continuite",era:"orokin",title:"L'Empire et la Continuité",when:"Avant l'Ancienne Guerre",
+  sum:"Les Orokin règnent sur le système Origine depuis des tours dorées et ont vaincu la mort à leur manière.",
+  body:["Par la Continuité, un Exécuteur transfère sa conscience dans un corps neuf, souvent celui d'un descendant, quand le sien s'use. Le même rituel maintiendra plus tard les Reines Jumelles en vie.",
+        "L'Empire repose sur une hiérarchie rigide. Au sommet siègent les Sept, un conseil d'Exécuteurs dont fait partie Ballas. Viennent ensuite les Archimédiens, savants de l'Empire, les soldats Dax, liés par le sang à l'obéissance, puis une immense population servile, dont descendent les Grineer.",
+        "La technologie orokin exploite le Néant, un espace hors de la réalité ordinaire. Le Kuva, décrit comme le sang des Orokin, est l'un de ses produits les plus mystérieux."],
+  keys:["Les soldats Dax sont biologiquement contraints d'obéir à quiconque porte le sang orokin."],
+  src:[["Codex","Entrées Orokin"],["Quête","La Guerre Intérieure"]],links:["orokin","ballas","sept"],place:["neant","terre"]},
+ {id:"tau",era:"orokin",title:"Les machines envoyées vers Tau",when:"Expansion orokin",
+  sum:"Pour coloniser le système Tau, les Orokin y envoient des machines auto-réplicantes chargées de préparer le terrain.",
+  body:["Le voyage est trop long pour des humains. Les Orokin confient donc la terraformation de Tau à des machines capables de se reproduire et de s'adapter.",
+        "Au fil des générations, ces machines gagnent une conscience collective et deviennent les Sentients. Leur grande faiblesse : le Néant leur est hostile, ce qui pèsera lourd dans la guerre à venir."],
+  keys:[],
+  src:[["Quête","Le Second Rêve"],["Codex","Sentients"]],links:["sentients","hunhow","orokin"],place:["tau"]},
+ {id:"zariman",era:"orokin",title:"L'incident du Zariman Ten Zero",when:"Saut vers Tau",
+  sum:"Un vaisseau colonial transportant des familles tente de rejoindre Tau par un saut dans le Néant. Il disparaît.",
+  body:["Le Zariman Ten Zero n'est pas armé : c'est un navire de colons, avec ses dortoirs, ses fêtes et ses enfants. Pendant le saut, un « accident » le désactive et le laisse dériver dans le Néant.",
+        "Quand le vaisseau réapparaît, les adultes ont sombré dans la folie et sont morts. Seuls les enfants ont survécu, transformés : ils manipulent désormais l'énergie du Néant. Les Orokin les craignent et veulent les éliminer. Ces enfants deviendront les Tenno.",
+        "Une partie de l'équipage n'a jamais vraiment disparu. Les Holdfasts, figés par le Néant en « incarnations conceptuelles », défendent encore le navire des siècles plus tard."],
+  keys:["C'est à bord du Zariman que l'Opérateur accepte le marché de l'Homme dans le Mur, un pacte qui donnera naissance au paradoxe du Drifter.","Duviri, le royaume du Drifter, est né des traumatismes vécus à bord."],
+  src:[["Quête","Le Second Rêve"],["Mise à jour","Les Anges du Zariman (2022)"],["Quête","La Nouvelle Guerre"]],links:["tenno","zariman-f","homme-mur","drifter"],place:["zariman","neant"]},
+ {id:"margulis",era:"orokin",title:"Margulis et les enfants",when:"Après le Zariman",
+  sum:"L'Archimédienne Margulis adopte les enfants du Zariman et défend leur vie face à un Empire qui veut les détruire.",
+  body:["Margulis invente un état de rêve qui protège les enfants de leurs propres pouvoirs, puis le Transfert : un moyen de canaliser la conscience d'un Tenno dans un corps assez solide pour la contenir.",
+        "Lors d'une séance, les pouvoirs des enfants lui brûlent les yeux. Elle reste aveugle à vie. Rell, tenu pour responsable, est chassé par les autres Tenno.",
+        "Les Exécuteurs détournent ses travaux à des fins militaires. Margulis refuse de renier les Tenno : les Sept la condamnent pour apostasie et trahison. Ballas, épris d'elle, siège parmi ses juges."],
+  keys:["The Old Peace laisse entendre que Margulis a pu comploter avec Ballas pour briser la paix de Tau, et prendre la place des Tenno face au bourreau."],
+  src:[["Quête","Le Second Rêve"],["Quête","Les Chaînes de Harrow"],["Mise à jour","The Old Peace (2025)"]],links:["margulis","ballas","tenno","rell","sept"],place:[]},
+ {id:"technocyte",era:"orokin",title:"La souche technocyte",when:"Recherches orokin",
+  sum:"L'Infestation, un fléau qui fusionne chair et machine, se répand depuis les laboratoires de l'Empire.",
+  body:["Le Codex la présente comme une création orokin qui a échappé à tout contrôle. Elle dévore organismes et technologies, et Deimos en devient l'un des foyers.",
+        "Une souche domestiquée, le Helminth, devient pourtant l'outil de Ballas : c'est elle qui transforme des êtres humains en Warframes."],
+  keys:[],
+  src:[["Codex","Infestés"],["Quête","Le Sacrifice"]],links:["infestes","entrati"],place:["deimos","eris"]},
+ {id:"warframes",era:"orokin",title:"La naissance des Warframes",when:"Débuts de la guerre",
+  sum:"Ballas transforme des êtres humains en Warframes à l'aide de la souche Helminth de l'Infestation.",
+  body:["La peau est greffée en armure, les organes sont modifiés, la volonté est effacée. Il reste une coquille capable de recevoir l'esprit d'un Tenno par le Transfert.",
+        "Grâce à ce lien, les enfants du Zariman combattent à distance, protégés dans leurs berceaux. Excalibur Prime est l'une des Warframes qu'ils pilotent dès l'époque de Tau."],
+  keys:["Certaines Warframes gardent une mémoire. Excalibur Umbra conserve un unique souvenir brûlant : celui d'avoir été un homme."],
+  src:[["Quête","Le Sacrifice"],["Mise à jour","The Old Peace (2025)"]],links:["ballas","umbra","infestes","tenno"],place:[]},
+
+ /* ---------- PAIX ET ANCIENNE GUERRE ---------- */
+ {id:"paix",era:"guerre",title:"L'Ancienne Paix de Tau",when:"Avant la guerre",
+  sum:"À Tau, Orokin et Sentients ont signé une paix. Les Tenno ont étudié aux côtés de jeunes Sentients.",
+  body:["La Xénoflore, une plante native de Tau, individualise les Sentients et les détache de leur esprit collectif. Elle leur donne une raison de vouloir la paix, et un traité est conclu avec les Orokin.",
+        "Sur l'Académie de Tauron, en orbite de la lune Perita, l'Opérateur étudie et se lie d'amitié avec Adis, un Sentient. Mais les Anarques de Galastra menacent l'équilibre en privant certains Sentients de Xénoflore.",
+        "Margulis remet aux Tenno des codes destinés à détruire les bases anarques. Ballas les a modifiés en secret : les codes terraforment la planète et anéantissent la Xénoflore. Les Orokin se retournent contre les Sentients, et le traité s'effondre."],
+  keys:["Adis, trahi, blesse gravement l'Opérateur, puis le ranime avant de mourir dans ses bras.","Margulis endort l'Opérateur et tente d'effacer ses souvenirs de Tau pour le protéger."],
+  src:[["Mise à jour","The Old Peace (2025)"]],links:["adis","ballas","margulis","sentients","tenno"],place:["tau"]},
+ {id:"vieille-guerre",era:"guerre",title:"L'Ancienne Guerre",when:"Conflit contre les Sentients",
+  sum:"Les Sentients s'adaptent à toute arme qui les frappe. L'armée orokin recule planète après planète.",
+  body:["Les Tenno renversent la situation : l'énergie du Néant échappe à l'adaptation sentiente, et leurs Warframes combattent sans exposer les enfants.",
+        "L'Empire gagne la guerre, mais à un prix qu'il comprend mal : il dépend désormais d'une armée qu'il redoute. Des Warframes de légende naissent de ce conflit, comme Inaros sur Mars ou Ivara la Chasseresse."],
+  keys:[],
+  src:[["Codex","Ancienne Guerre"],["Fragments","Fragments Céphalon"],["Leverian","Ivara"]],links:["sentients","tenno","orokin"],place:["mars"]},
+ {id:"rell",era:"guerre",title:"La veille de Rell",when:"Pendant la guerre",
+  sum:"Chassé par les siens, l'enfant Rell lie son esprit à la Warframe Harrow pour contenir l'Homme dans le Mur.",
+  body:["Rell ne rejoint pas la Réserve où dorment les autres Tenno. Il sacrifie sa vie et monte la garde contre l'entité du Néant, seul, pendant des siècles.",
+        "Les fondatrices du Voile Rouge le recueillent et étudient ses enseignements. Il devient leur muse sacrée, et son temple se cache dans une épave orokin."],
+  keys:["Quand Rell abandonne sa veille, le Voile Rouge sombre dans la folie : les Tenno doivent reprendre la garde à sa place."],
+  src:[["Quête","Les Chaînes de Harrow"]],links:["rell","homme-mur","voile"],place:[]},
+ {id:"eidolon",era:"guerre",title:"La chute de l'Eidolon",when:"Pendant la guerre",
+  sum:"Un Sentient colossal s'abat sur la Terre. Ses fragments rôdent encore la nuit sur les Plaines.",
+  body:["La Warframe Gara abat l'Eidolon dans le lac qui porte aujourd'hui son nom. Une gardienne ne suffit pas : un veilleur est placé là pour le maintenir au fond.",
+        "Brisé, l'Eidolon laisse des éclats qui se réveillent à la tombée du jour, les Teralysts et leurs semblables. Les Ostrons de Cetus vivent à l'ombre de ce cadavre géant, sous la protection de l'Unum."],
+  keys:["Le veilleur hésite, tend la main à l'Eidolon qui s'en sert pour remonter, puis se jette dans le lac pour le sceller à nouveau. Ce veilleur est Revenant."],
+  src:[["Quête","Le Masque du Revenant"],["Mise à jour","Plaines d'Eidolon (2017)"]],links:["sentients","ostrons","unum"],place:["terre"]},
+ {id:"natah",era:"guerre",title:"Natah devient la Lotus",when:"Fin de la guerre",
+  sum:"Natah, Sentient et fille de Hunhow, est envoyée parmi les Orokin pour détruire les Tenno de l'intérieur.",
+  body:["Elle prend la place d'une mère auprès des enfants, et finit par les protéger réellement. Elle rejette son nom et se fait appeler la Lotus.",
+        "Dans un souvenir de Lua, son frère Erra l'appelle encore Natah. Elle refuse ce nom, et ordonne aux Tenno de l'abattre. Hunhow, vaincu, est brisé et enfoui."],
+  keys:[],
+  src:[["Quête","Natah"],["Quête","Prélude à la guerre : Erra (2019)"]],links:["lotus","hunhow","erra","sentients"],place:["lune"]},
+ {id:"ordan",era:"guerre",title:"La Bête des Os",when:"Fin de l'Empire",
+  sum:"Le mercenaire Ordan Karris attaque les Orokin dans leur propre palais. Ballas le condamne à servir pour l'éternité.",
+  body:["Ordan, surnommé la Bête des Os, hait ses maîtres en secret. Atteint d'une maladie incurable, il gagne leur confiance jusqu'à être invité au palais.",
+        "Il refuse l'immortalité qu'on lui offre et tue autant d'Orokin qu'il peut avec les armes cachées dans son crâne. Ballas lui fait boire du Kuva : Ordan devient une conscience numérique, et ses souvenirs sont effacés."],
+  keys:["Ordan devient Ordis, le céphalon du vaisseau du joueur. Il a retrouvé puis volontairement purgé ses souvenirs pour rester auprès de l'Opérateur."],
+  src:[["Fragments","Fragments Céphalon"],["Opération","Le Ventre de la Bête"]],links:["ordis","ballas"],place:[]},
+ {id:"umbra",era:"guerre",title:"La faute d'Umbra",when:"Trahison de Ballas",
+  sum:"Un soldat Dax surprend Ballas en pleine trahison. Sa punition donne naissance à Excalibur Umbra.",
+  body:["Ballas prépare sa défection depuis plusieurs vies, depuis la mort de Margulis. Un Dax l'espionne : Ballas l'infeste de Helminth et le transforme en Warframe.",
+        "Pour punir l'homme d'avoir contrarié ses plans, Ballas efface sa lignée. Il force la nouvelle Warframe à tuer son propre fils, Isaah."],
+  keys:[],
+  src:[["Quête","Le Sacrifice"]],links:["umbra","ballas"],place:[]},
+
+ /* ---------- EFFONDREMENT ---------- */
+ {id:"reconciliation",era:"chute",title:"La Réconciliation",when:"Cérémonie de la victoire",
+  sum:"Lors de la cérémonie censée les honorer, les Tenno massacrent les Exécuteurs orokin.",
+  body:["L'ordre vient de la Lotus, qui voit l'Empire se préparer à éliminer ses propres soldats. L'Empire s'effondre en quelques heures.",
+        "Ballas, absent de la salle, survit et nourrit dès lors une haine tenace envers la Lotus et les Tenno."],
+  keys:[],
+  src:[["Quête","Le Second Rêve"],["Quête","Le Sacrifice"]],links:["lotus","ballas","tenno","orokin"],place:["neant"]},
+ {id:"sorren",era:"chute",title:"Le serment de Sorren",when:"Pendant l'Effondrement",
+  sum:"Un garde orokin survit au massacre et jure de se venger des Tenno. Il deviendra le Stalker.",
+  body:["Sorren servait les Orokin comme Gardien. Témoin de leur extermination, il cherche vengeance, puis devient lui-même une cible.",
+        "La Warframe Jade le protège. La loi orokin interdit leur amour ; Sorren l'enfreint et jure de protéger leur famille."],
+  keys:["Des siècles plus tard, Jade meurt en donnant naissance à leur fils, que le joueur nomme Sirius ou Orion."],
+  src:[["Quête","Ombres de Jade (2024)"]],links:["stalker","jade-p"],place:["uranus"]},
+ {id:"sommeil",era:"chute",title:"Le long sommeil",when:"Après l'Effondrement",
+  sum:"La Lotus cache les Tenno en stase. La Lune, avec sa Réserve, disparaît dans le Néant.",
+  body:["Pendant des siècles, les Tenno dorment et rêvent, coupés de leurs Warframes. La Lotus scelle leurs souvenirs de l'Ancienne Guerre.",
+        "Ordis, privé de ses maîtres, retrouve sa mémoire humaine, envisage de s'autodétruire, puis efface lui-même son passé."],
+  keys:[],
+  src:[["Quête","Le Second Rêve"],["Quête","The Teacher (2025)"]],links:["lotus","tenno","ordis"],place:["lune"]},
+ {id:"heritiers",era:"chute",title:"Les héritiers des ruines",when:"Les siècles vides",
+  sum:"Sans maîtres, le système se fragmente entre trois puissances.",
+  body:["Les Grineer, clones dégénérés au service des Reines Jumelles, conquièrent par la force. Le clonage répété les ronge, Reines comprises.",
+        "Les Corpus, guilde marchande fondée sur la doctrine de Parvos Granum, achètent ce qu'ils ne prennent pas. L'Infestation ronge les vaisseaux et les colonies.",
+        "Sur Mars, une colonie garde la mémoire d'Inaros, la Warframe qui l'avait défendue et dont elle conserve les restes, jusqu'à ce que les Grineer l'anéantissent."],
+  keys:[],
+  src:[["Codex","Grineer, Corpus, Infestés"],["Quête","Les Sables d'Inaros"]],links:["grineer","corpus","infestes","reines","parvos","baro"],place:["ceres","jupiter","eris","mars"]},
+
+ /* ---------- RÉVEIL ---------- */
+ {id:"vor",era:"eveil",title:"Le Prix de Vor",when:"Quête · 2014",
+  sum:"La Lotus réveille un Tenno, capturé par le capitaine grineer Vor. Le joueur reprend le contrôle de sa Warframe.",
+  body:["Point de départ du jeu. Le Tenno récupère son vaisseau, retrouve Ordis et commence à combattre les factions qui se disputent le système.",
+        "Le capitaine Vor, obsédé par les secrets orokin, sera abattu ; on le recroisera pourtant transformé par le Néant."],
+  keys:[],
+  src:[["Quête","Le Prix de Vor"]],links:["lotus","ordis","grineer","vor"],place:["mercure"]},
+ {id:"teacher",era:"eveil",title:"Le Maître",when:"Quête · 2025",
+  sum:"Teshin capture le Tenno pour lui enseigner les mods, loin de l'influence de la Lotus.",
+  body:["Des Corpus pillent les Forêts grineer de la Terre pour le compte de Nef Anyo. Teshin, curieux du Tenno qui a vaincu Vor, coupe son lien avec la Lotus et l'entraîne dans sa cache.",
+        "Il se laisse capturer par les Corpus pour couvrir la fuite du Tenno, qui revient le délivrer. La Lotus ordonne alors sa capture."],
+  keys:["Teshin révèle que la Lotus a scellé les souvenirs de guerre des Tenno, et admet que c'était nécessaire."],
+  src:[["Quête","The Teacher (2025)"]],links:["teshin","lotus","nef"],place:["terre"]},
+ {id:"stalker",era:"eveil",title:"La traque du Stalker",when:"Récurrent",
+  sum:"Un guerrier masqué traque les Tenno pour venger les Orokin massacrés.",
+  body:["Le Stalker attaque les joueurs qui ont abattu des cibles majeures. Ses Acolytes et ses messages menaçants en font une conscience accusatrice de la Réconciliation."],
+  keys:["Sous le masque se cache Sorren, ancien Gardien orokin."],
+  src:[["Événement","Acolytes"],["Quête","Ombres de Jade (2024)"]],links:["stalker"],place:[]},
+ {id:"hunhow-eveil",era:"eveil",title:"Le réveil de Hunhow",when:"Quête · 2015",
+  sum:"Des drones et des oculystes inconnus apparaissent sur Terre. Une voix étrangère parasite les transmissions de la Lotus.",
+  body:["Hunhow sort de son sommeil et s'infiltre dans l'esprit de la Lotus. Les fragments sentients déterrés par les Grineer lui permettent de traquer la faiblesse des Tenno."],
+  keys:["Hunhow appelle la Lotus par son vrai nom : Natah."],
+  src:[["Quête","Natah"]],links:["hunhow","lotus"],place:["terre"]},
+ {id:"second-reve",era:"eveil",title:"Le Second Rêve",when:"Quête · 2015",
+  sum:"Hunhow et le Stalker s'allient pour détruire les Tenno. La Lune revient du Néant.",
+  body:["Hunhow arme le Stalker d'une épée sentiente, War, et le lance vers le « ventre dans le ciel » : la Réserve cachée sur Lua.",
+        "La Lotus ramène la Lune dans l'espace réel. Dans la Réserve, un berceau doré s'ouvre : le Tenno n'est pas la Warframe, mais l'enfant qui la pilote.",
+        "Au moment de frapper, le Stalker hésite. La Warframe brise War en deux, rompant l'emprise de Hunhow. La Lotus confesse ensuite son passé."],
+  keys:["Le joueur est l'Opérateur, un enfant du Zariman. La Lotus est une Sentient."],
+  src:[["Quête","Le Second Rêve"]],links:["lotus","hunhow","stalker","tenno","ordis"],place:["lune","neptune"]},
+ {id:"guerre-interieure",era:"eveil",title:"La Guerre Intérieure",when:"Quête · 2016",
+  sum:"Les Reines Jumelles tentent de s'emparer du corps de l'Opérateur pour échapper à la décrépitude du clonage.",
+  body:["Les Reines survivent par la Continuité, mais leurs corps clonés se dégradent. Il leur faut un hôte jeune : l'Opérateur.",
+        "Teshin, agent double contraint par le Sceptre de Kuva, guide puis affronte l'Opérateur. Dans une vision, celui-ci retrouve les souvenirs du Zariman que Margulis avait cachés, et ses pouvoirs du Néant.",
+        "Le Tenno vole le Sceptre et libère Teshin. La Reine aînée meurt ; la Reine Ver s'enfuit."],
+  keys:["Une voix inconnue commente le choix final sur le Kuva : la première apparition de l'Homme dans le Mur."],
+  src:[["Quête","La Guerre Intérieure"]],links:["reines","teshin","grineer","homme-mur"],place:["kuva"]},
+ {id:"harrow",era:"eveil",title:"Les Chaînes de Harrow",when:"Quête · 2017",
+  sum:"Le Voile Rouge appelle à l'aide : Rell a quitté sa veille, et ses fidèles sombrent dans la folie.",
+  body:["Palladino, médium du Voile Rouge, cherche à contacter Rell par une séance. Les manifestations hostiles de Rell réaniment les morts.",
+        "Dans un temple au cœur d'une épave orokin, Harrow pend enchaîné. Briser les chaînes libère d'abord un être malveillant, puis Rell lui-même."],
+  keys:["Rell a gagné son repos. Les Tenno héritent de sa veille contre l'Homme dans le Mur."],
+  src:[["Quête","Les Chaînes de Harrow"]],links:["rell","homme-mur","voile"],place:[]},
+ {id:"plaines",era:"eveil",title:"Les Plaines d'Eidolon",when:"Mise à jour · 2017",
+  sum:"Premier monde ouvert : la colonie ostron de Cetus, adossée à une tour orokin où veille l'Unum.",
+  body:["Les Ostrons commercent avec les Tenno et redoutent la nuit, quand les Eidolons se lèvent. La quête de Saya raconte le deuil d'une famille de Cetus.",
+        "Le marchand Nakak vend un masque qui ouvre les visions de l'Unum : l'histoire du veilleur du lac."],
+  keys:[],
+  src:[["Mise à jour","Plaines d'Eidolon"],["Quête","La Veillée de Saya"],["Quête","Le Masque du Revenant (2018)"]],links:["ostrons","unum","sentients"],place:["terre"]},
+ {id:"sacrifice",era:"eveil",title:"Le Sacrifice",when:"Quête · 2018",
+  sum:"Ballas reparaît et enlève la Lotus. Les souvenirs d'Excalibur Umbra révèlent la fabrication des Warframes.",
+  body:["Le casque de la Lotus montre Umbra maîtrisé par Ballas et des Sentients. L'Opérateur suit la piste jusqu'au Vitruvien, le laboratoire de Ballas.",
+        "Dans le dernier souvenir d'Umbra, l'Opérateur partage son deuil : Umbra comme la main, l'Opérateur comme l'âme. Umbra poignarde Ballas, et l'Opérateur enfonce la lame."],
+  keys:["La Lotus reparaît sous sa forme de Natah, affirme que Ballas ne lui a rien fait, emporte son corps et rentre « chez sa mère »."],
+  src:[["Quête","Le Sacrifice"]],links:["ballas","umbra","lotus","homme-mur"],place:["lune","ceres","neptune"]},
+ {id:"vallis",era:"eveil",title:"Fortuna et la Vallée Orbis",when:"Mise à jour · 2018",
+  sum:"Sur Vénus, des ouvriers endettés envers le Corpus fondent Solaris United et s'allient aux Tenno.",
+  body:["Les Solaris ont échangé des parties de leur corps contre des prothèses pour rembourser des dettes sans fin. Nef Anyo exploite la ville de Fortuna.",
+        "La quête Vox Solaris donne aux Tenno un rôle dans leur résistance, au milieu des excavatrices de la vallée."],
+  keys:[],
+  src:[["Mise à jour","Fortuna"],["Quête","Vox Solaris"]],links:["solaris","corpus","nef"],place:["venus"]},
+ {id:"prelude",era:"eveil",title:"Prélude à la guerre",when:"Quêtes · 2018–2020",
+  sum:"Ballas a survécu, réduit à l'état d'Amalgame. Erra, le frère de Natah, prépare l'assaut sentient.",
+  body:["L'Homme dans le Mur apprend à l'Opérateur que Ballas vit, transformé et tenu en laisse par les Sentients. En secret, il fait parvenir aux Tenno la Paracesis.",
+        "Dans un vaisseau-mère sentient, Erra parle avec une Natah restaurée mais trouée de souvenirs, persuadée de combattre encore les Orokin. Il lui annonce la mort de leur mère et la pousse à finir la guerre."],
+  keys:["Natah demande à Ballas s'il fait partie des « Créateurs ». Erra la jette alors dans un champ d'énergie inconnu."],
+  src:[["Quête","Prologue Chimère (2018)"],["Quête","Erra (2019)"],["Quête","Le Créateur (2020)"]],links:["ballas","erra","lotus"],place:[]},
+ {id:"liches",era:"eveil",title:"Les Liches Kuva",when:"Mise à jour · 2019",
+  sum:"Les Tenno donnent eux-mêmes naissance à des ennemis immortels en abattant des larves de Kuva.",
+  body:["Chaque Liche est un Grineer ressuscité par le Kuva, qui se souvient du Tenno qui l'a tué. Il faut découvrir les bons Requiem pour le vaincre."],
+  keys:[],
+  src:[["Mise à jour","Le Sang Ancien"]],links:["grineer","reines"],place:["kuva"]},
+ {id:"deimos",era:"eveil",title:"Le Cœur de Deimos",when:"Mise à jour · 2020",
+  sum:"La famille Entrati, figée depuis des siècles sur une lune infestée, ouvre les portes du Nécralisque.",
+  body:["Mère, ses enfants et sa grand-mère vivent dans l'absence d'Albrecht, le patriarche disparu. Loid, serviteur fidèle, veille sur ses secrets.",
+        "Les Entrati cachent mal leurs propres zones d'ombre, et la lune elle-même semble vivante."],
+  keys:[],
+  src:[["Mise à jour","Le Cœur de Deimos"]],links:["entrati","albrecht","infestes","loid"],place:["deimos"]},
+
+ /* ---------- NOUVELLE GUERRE ---------- */
+ {id:"nouvelle-guerre",era:"nouvelle",title:"La Nouvelle Guerre",when:"Quête · 2021",
+  sum:"Ballas et Erra lancent l'invasion sentiente. Ballas soumet le système sous le voile du Narmer.",
+  body:["Ballas bannit la Lotus et l'Opérateur dans un portail du Néant, puis gouverne par les Voiles du Narmer, qui lavent les esprits et salissent le nom des Tenno.",
+        "Un inconnu atterrit sur Terre : le Drifter. Il infiltre le Narmer, recueille des éclats d'Archontes pour soigner la Lotus mourante, aidé d'Ordis et d'une alliance inattendue avec Hunhow.",
+        "Ballas veut dévorer le soleil avec le vaisseau-mère Praghasa et fuir seul. Erra, menacé lui aussi, se retourne contre lui et guide les Tenno."],
+  keys:["Les Tenno imposent un Voile à Ballas. Croyant embrasser Margulis, il laisse la Lotus reprendre son essence : elle l'achève.",
+        "Le Drifter est une version âgée de l'Opérateur, issue d'une autre réalité, née du pacte passé avec l'Homme dans le Mur.",
+        "La Lotus doit choisir quelle voix la guide : la Lotus, Natah ou Margulis."],
+  src:[["Quête","La Nouvelle Guerre"]],links:["erra","ballas","narmer","drifter","lotus","hunhow","ordis","homme-mur"],place:["terre","lune"]},
+ {id:"anges",era:"nouvelle",title:"Les Anges du Zariman",when:"Mise à jour · 2022",
+  sum:"Le Zariman Ten Zero sort du Néant et se met à chanter. Les Holdfasts luttent pour le garder.",
+  body:["Grineer et Corpus se ruent sur le navire. Son chant coupe le contact avec la Lotus. Quinn, chef des Holdfasts, défend encore le Pilier Reliquaire avec Cavalero et l'Archimédienne Yonta.",
+        "Certains Holdfasts ont cédé au chant et sont devenus des Anges du Néant. Kira, l'une des leurs, mène l'assaut et doit être détruite."],
+  keys:["Les Holdfasts tirent désormais leur force des pouvoirs des Tenno. Le Chrysalith devient une forteresse contre le Néant."],
+  src:[["Mise à jour","Les Anges du Zariman"]],links:["zariman-f","tenno","lotus"],place:["zariman"]},
+ {id:"veilbreaker",era:"nouvelle",title:"Veilbreaker",when:"Mise à jour · 2022",
+  sum:"Kahl-175, un Grineer libéré du Narmer, mène sa propre campagne aux côtés des Tenno.",
+  body:["Kahl arrache son Voile à bord d'un Murex au-dessus de Deimos et s'évade, sous le regard d'un nouvel Archonte au corps d'Erra.",
+        "Il installe sa garnison au camp du Drifter et lutte pour libérer ses frères. Il ne doit rien aux Reines ni à Vay Hek, mais tout aux Tenno et à Fille, des Entrati."],
+  keys:[],
+  src:[["Mise à jour","Veilbreaker"],["Journal","Journaux de Kahl"]],links:["kahl","grineer","narmer"],place:["terre","deimos"]},
+ {id:"duviri",era:"nouvelle",title:"Le Paradoxe de Duviri",when:"Mise à jour · 2023",
+  sum:"Le Drifter est prisonnier de Duviri, royaume sans couleur dont l'humeur suit celle de son roi fou.",
+  body:["Dominus Thrax exécute le Drifter encore et encore. Chaque jour, Duviri prend l'émotion du roi : colère, joie, envie, peur, tristesse.",
+        "Teshin, un Teshin d'une autre histoire, enseigne au Drifter ce que sont les Tenno à travers le livre des Contes de Duviri."],
+  keys:["Duviri est la manifestation du traumatisme du Drifter à bord du Zariman. Thrax est une figurine de son propre passé."],
+  src:[["Mise à jour","Le Paradoxe de Duviri"]],links:["drifter","teshin","thrax"],place:["duviri"]},
+ {id:"murmures",era:"nouvelle",title:"Murmures dans les Murs",when:"Mise à jour · 2023",
+  sum:"Sous le Nécralisque, les laboratoires d'Albrecht Entrati révèlent sa lutte contre l'Indifférence.",
+  body:["Loid, le dormeur réveillé, rêve d'un nom : Kalymos. Il envoie les Tenno dans les laboratoires d'Albrecht, assiégés par le Murmure, les serviteurs de l'Homme dans le Mur, que l'on nomme aussi l'Indifférence.",
+        "Les Cavia, expériences animales inachevées d'Albrecht, ne parlent que la langue du Néant. Albrecht a fui en 1999 pour éloigner l'entité de Loid, mais elle l'a suivi à travers le temps."],
+  keys:["L'Indifférence se calme face à un geste d'amour et de dévotion, ce que Loid espérait depuis toujours d'Albrecht.","Le sort d'Albrecht reste ambigu : l'Albrecht qu'on croise pourrait être l'entité qui porte son visage."],
+  src:[["Mise à jour","Murmures dans les Murs"],["Fragments","Journaux d'Albrecht"]],links:["albrecht","homme-mur","entrati","cavia","loid"],place:["deimos"]},
+ {id:"jade",era:"nouvelle",title:"Ombres de Jade",when:"Mise à jour · 2024",
+  sum:"Le Stalker tente de sauver Jade, mourante. Il s'allie à ses ennemis jurés.",
+  body:["Le Bioplasma échoue. Hunhow pousse le Stalker vers les Tenno, qui lui indiquent le Cortichrome, arraché aux Infestés. Une capitaine corpus, Xeto, le traque.",
+        "Pendant le traitement, Jade se révèle enceinte et meurt en accouchant. L'enfant hérite de sa lumière. Quand il pleure, Xeto fait cesser le feu."],
+  keys:["Le Stalker s'appelait Sorren. L'enfant reçoit le nom de Sirius ou Orion selon le choix du joueur."],
+  src:[["Quête","Ombres de Jade"]],links:["stalker","jade-p","hunhow"],place:["uranus"]},
+ {id:"lotus-eaters",era:"nouvelle",title:"Les Mangeurs de Lotus",when:"Quête · 2024",
+  sum:"Au bord d'un abîme du Néant, la Lotus chante pour couvrir un appel venu du passé.",
+  body:["Rongée par l'Indifférence, la Lotus prévient l'Opérateur qu'elle est sous influence. Seul le Drifter, grâce à son paradoxe, peut remonter le temps.",
+        "Un bipeur sonne. Le Drifter répond et se retrouve dans le centre commercial abandonné de Höllvania, guidé par Kalymos, le kavat d'Albrecht."],
+  keys:["Il faut trouver Albrecht avant que l'Homme dans le Mur ne le trouve."],
+  src:[["Quête","The Lotus Eaters (2024)"]],links:["lotus","drifter","loid","albrecht"],place:["deimos","hollvania"]},
+ {id:"1999",era:"nouvelle",title:"La Hex : Höllvania 1999",when:"Quête · 2024",
+  sum:"Le 31 décembre 1999, le Drifter rejoint la Hex pour empêcher l'explosion d'un réacteur et retrouver Albrecht.",
+  body:["Höllvania est sous confinement militaire à cause du Techrot, une contagion qui prend le contrôle des machines et des corps. La major Neci Rusalka, possédée par l'Indifférence, commande les forces Scaldra.",
+        "Les six protoframes de la Hex donnent un visage humain à des Warframes connues : Arthur (Excalibur), Aoi (Mag), Amir (Volt), Leticia (Trinity), Eleanor (Nyx) et Quincy (Cyte-09).",
+        "Albrecht, captif, révèle que tous sont pris dans une boucle temporelle."],
+  keys:["Dans la première boucle, toute la Hex meurt et Albrecht abat le Drifter. Celui-ci remonte le temps et, en tissant des liens avec chacun, peut tous les sauver."],
+  src:[["Quête","The Hex (2024)"]],links:["albrecht","homme-mur","hex","drifter"],place:["hollvania"]},
+ {id:"vers-tau",era:"nouvelle",title:"Retour vers Tau",when:"Quête · 2025",
+  sum:"Albrecht a fui vers Tau. Pour le suivre, l'Opérateur revit ses souvenirs de l'Académie de Tauron.",
+  body:["Dans la Réfractorie sombre, la Lotus fait revivre à l'Opérateur la paix de Tau, son amitié avec Adis et la trahison qui a tout brisé.",
+        "Valdur, chargé de garantir le plan de Ballas, renonce au dernier moment et aide l'Opérateur à enterrer Adis. L'Opérateur prend ensuite le contrôle d'Uriel pour rejoindre l'Académie."],
+  keys:["Tau est désormais en vue, mais il a changé depuis les souvenirs de l'Opérateur."],
+  src:[["Quête","The Old Peace (2025)"]],links:["adis","margulis","ballas","lotus","albrecht"],place:["tau"]},
+ {id:"constellations",era:"nouvelle",title:"Constellations",when:"Quête · 2026",
+  sum:"Les deux futurs fils du Stalker surgissent de vingt ans plus tard, chacun avec son mentor, et se font la guerre.",
+  body:["Sur un lac de la Vallée Orbis, deux Warframes s'affrontent. Sirius et Orion, venus d'avenirs concurrents, cherchent à recruter leur père. Leurs mentors, Vena (protoframe de Garuda) et Ryoku (protoframe d'Ash), les accompagnent.",
+        "Hunhow, qui a échoué avec ses propres enfants Natah et Erra, aide le Stalker. Excalibur Umbra, autre père endeuillé, les rejoint. Une force invisible attise la querelle : l'Indifférence."],
+  keys:["Hunhow sacrifie ses propres souvenirs à l'Indifférence pour que les deux futurs puissent exister. Il ne reconnaît plus les Tenno."],
+  src:[["Quête","Jade Shadows : Constellations (2026)"]],links:["stalker","hunhow","umbra","homme-mur"],place:["venus","uranus"]}
+];
+
+const ARCH=[
+ {id:"frag",type:"Fragment",title:"Fragments Céphalon",lvl:2,where:"À scanner sur les tuiles de chaque planète",
+  teaser:"Des éclats de mémoire laissés par un céphalon de l'ère orokin.",
+  body:["Les fragments sont cachés dans les missions et se scannent avec le Codex. Chaque série reconstitue un texte : légendes, chroniques et souvenirs de l'Empire.","Une série entière raconte la vie d'Ordan Karris, la Bête des Os, et le rôle de Ballas dans sa transformation en Ordis."],
+  rev:["vieille-guerre","continuite","ordan"],canon:"Confirmé"},
+ {id:"leverian",type:"Leverian",title:"Le Leverian",lvl:2,where:"Codex, onglet Leverian",
+  teaser:"Une galerie virtuelle qui raconte l'histoire de onze Warframes.",
+  body:["Chaque exposition présente une Warframe à travers des objets et des panneaux commentés : Ash, Atlas, Dante, Gauss, Grendel, Ivara, Lavos, Nezha, Nova, Styanax et Voruna.","Ces récits, souvent situés dans l'Empire finissant, montrent des Warframes qui désobéissent, protègent ou se vengent. La galerie de Dante n'est accessible qu'après deux quêtes."],
+  rev:["warframes","vieille-guerre"],canon:"Confirmé"},
+ {id:"codex",type:"Codex",title:"Le Codex",lvl:1,where:"Menu du vaisseau",
+  teaser:"L'encyclopédie du jeu, qui se remplit à mesure que vous scannez ennemis et objets.",
+  body:["Chaque ennemi, arme et Warframe scanné y gagne une notice. Les descriptions d'objets, souvent négligées, contiennent des allusions à l'histoire.","C'est la porte d'entrée la plus accessible : la plupart des fiches de ce registre y renvoient."],
+  rev:["heritiers","tau","technocyte"],canon:"Confirmé"},
+ {id:"simaris",type:"Synthèse",title:"Synthèses de Simaris",lvl:3,where:"Sanctuaire de Simaris, relais",
+  teaser:"Scanner des cibles pour le Céphalon Simaris débloque des récits inédits.",
+  body:["Chaque synthèse terminée ouvre une entrée narrative sur l'époque orokin.","Le travail est long et l'information dispersée : c'est l'une des sources les plus enfouies du jeu."],
+  rev:["margulis","zariman"],canon:"Confirmé"},
+ {id:"nightwave",type:"Transmission",title:"Nightwave",lvl:2,where:"Radio de Nora Night, saisons de Nightwave",
+  teaser:"Des feuilletons radio : Le Loup de Saturne Six, L'Émissaire, Le Maître-Verrier…",
+  body:["Chaque série raconte une histoire indépendante par épisodes : un évadé grineer légendaire, un mystérieux émissaire, un tueur qui transforme ses victimes en verre.","Ces récits enrichissent les marges du système plutôt que la grande trame, mais certains personnages reviennent ensuite en jeu."],
+  rev:["heritiers"],canon:"Confirmé"},
+ {id:"kahl",type:"Journal",title:"Journaux de Kahl",lvl:1,where:"Camp du Drifter, après Veilbreaker",
+  teaser:"Les notes d'un soldat grineer qui apprend à penser par lui-même.",
+  body:["Kahl écrit maladroitement, et c'est voulu. On voit un clone découvrir le choix, la loyauté et la peur.","Une rare fenêtre sur la vie ordinaire chez les Grineer."],
+  rev:["veilbreaker"],canon:"Confirmé"},
+ {id:"albrecht",type:"Journal",title:"Les écrits d'Albrecht Entrati",lvl:3,where:"Deimos, laboratoires d'Albrecht",
+  teaser:"Le Grimoire et les enregistrements d'un savant orokin qui a voulu mesurer le Néant.",
+  body:["Au fil des enregistrements, la curiosité d'Albrecht devient obsession. Il décrit des expériences, des doutes, puis sa fuite pour éloigner l'Indifférence de Loid.","Ses derniers messages disent qu'elle l'a toujours observé, et qu'il ne se sentait pas digne. La séquence Kalymos se complète page après page."],
+  rev:["murmures","1999","deimos","lotus-eaters"],canon:"Confirmé"},
+ {id:"zariman-echo",type:"Fragment",title:"Échos du Zariman",lvl:3,where:"Zariman Ten Zero, Chrysalith",
+  teaser:"Ce qui reste des familles à bord pendant le saut.",
+  body:["Objets, enregistrements et souvenirs de Quinn reconstituent la vie à bord avant l'« accident ».","Le récit reste volontairement fragmentaire : la cause exacte de l'incident n'est pas expliquée."],
+  rev:["zariman","anges"],canon:"Confirmé"},
+ {id:"ballas-voice",type:"Quête",title:"La voix de Ballas",lvl:2,where:"Le Sacrifice, La Nouvelle Guerre, The Old Peace",
+  teaser:"La narration de l'Exécuteur, entre regret et mépris.",
+  body:["Ballas parle comme un créateur qui juge ses œuvres. Les enregistrements du Vitruvien disent qu'il préparait sa trahison depuis plusieurs vies.","Lire ses répliques en parallèle du destin de Margulis éclaire tout le conflit, jusqu'à la paix de Tau qu'il a sabotée."],
+  rev:["sacrifice","margulis","nouvelle-guerre","paix"],canon:"Confirmé"},
+ {id:"comics",type:"Bande dessinée",title:"Les comics Warframe",lvl:4,where:"Série publiée en 2017–2018",
+  teaser:"Une série de bandes dessinées sur des Tenno, hors des quêtes principales.",
+  body:["La série suit des personnages et des événements qui ne figurent pas dans le jeu. Elle reprend l'esthétique et les factions mais prend des libertés.","Son statut canonique est discuté par la communauté : à lire comme un récit parallèle."],
+  rev:["heritiers"],canon:"Contesté"},
+ {id:"natah-q",type:"Quête",title:"Les messages de Hunhow",lvl:2,where:"Quêtes Natah et Le Second Rêve",
+  teaser:"Des interférences dans les communications de la Lotus.",
+  body:["Hunhow s'adresse au Tenno à travers des transmissions brouillées. Sa voix trahit d'abord la vraie nature de la Lotus.","Ces échanges sont la première pièce du puzzle sentient."],
+  rev:["hunhow-eveil","second-reve"],canon:"Confirmé"},
+ {id:"description",type:"Codex",title:"Descriptions d'objets",lvl:1,where:"Arsenal, marché, fonderie",
+  teaser:"Une phrase par arme, mais certaines en disent long.",
+  body:["Les armes orokin, les Primes et les reliques portent des descriptions qui évoquent leurs anciens propriétaires.","En les croisant, on retrouve des noms, des rangs et des drames de l'Empire."],
+  rev:["continuite"],canon:"Confirmé"},
+ {id:"jade-feathers",type:"Fragment",title:"Les plumes de Jade",lvl:3,where:"Près de Teshin, après Ombres de Jade",
+  teaser:"Sept plumes qui racontent le passé de Jade.",
+  body:["Après la quête, sept plumes apparaissent près de Teshin. Chacune détaille une part de la vie de Jade.","Ordis lui-même analyse l'une d'elles, et le récit du Stalker rapproche son propre passé de la surface."],
+  rev:["jade","sorren"],canon:"Confirmé"},
+ {id:"ostrons",type:"Fragment",title:"Récits ostrons",lvl:2,where:"Cetus, Plaines d'Eidolon",
+  teaser:"Contes et croyances d'un peuple qui vit sous un cadavre de Sentient.",
+  body:["Les Ostrons parlent de l'Unum avec ferveur et de l'Eidolon avec crainte. Leurs histoires mêlent souvenirs déformés de la guerre et superstition.","La quête La Veillée de Saya en donne la version la plus intime, à travers une famille de Cetus."],
+  rev:["eidolon","plaines"],canon:"Confirmé"},
+ {id:"q-limbo",type:"Quête",title:"La Théorie de Limbo",lvl:2,where:"Quête secondaire · 2014",
+  teaser:"Un théorème inachevé laissé par Limbo, et la preuve que la Faille existe.",
+  body:["Ordis reçoit un théorème incomplet et l'assemble à partir de fragments récupérés en Archwing et en excavation.","La démonstration finale révèle que Limbo a commis une grave erreur de calcul, qui s'est terminée en catastrophe. Ordis invite à la prudence."],
+  rev:["continuite"],canon:"Confirmé",wf:"limbo"},
+ {id:"q-mirage",type:"Quête",title:"Messages cachés",lvl:2,where:"Quête secondaire, messagerie",
+  teaser:"Des énigmes envoyées par messages, jusqu'à une Warframe d'illusions.",
+  body:["La quête de Mirage avance par devinettes reçues dans la messagerie du vaisseau.","Elle joue sur les reflets et la tromperie, dans l'esprit d'une cour orokin éprise de spectacle."],
+  rev:["continuite"],canon:"Confirmé",wf:"mirage"},
+ {id:"q-inaros",type:"Quête",title:"Les Sables d'Inaros",lvl:2,where:"Mars, via Baro Ki'Teer · 2016",
+  teaser:"La tombe d'une Warframe vénérée par une colonie martienne disparue.",
+  body:["Inaros a défendu une colonie de Mars contre les « Hommes dorés du ciel » et les Infestés, et en est mort. Les colons ont gardé ses restes dans quatre vases sacrés.","La voix qui guide le Tenno dans le temple est celle de la mère de Baro Ki'Teer, qui lui racontait ces histoires enfant, avant que les Grineer n'anéantissent la colonie."],
+  rev:["heritiers","vieille-guerre"],canon:"Confirmé",wf:"inaros"},
+ {id:"q-octavia",type:"Quête",title:"L'Hymne d'Octavia",lvl:2,where:"Lune · 2017",
+  teaser:"Une salle de concert piégée sur Lua et un instrument à recomposer.",
+  body:["La quête s'appuie sur le Mandachord, un séquenceur orokin. Elle donne à la musique une place dans la culture de l'Empire.","Elle se déroule sur Lua, revenue du Néant après le Second Rêve."],
+  rev:["second-reve"],canon:"Confirmé",wf:"octavia"},
+ {id:"q-titania",type:"Quête",title:"Le Bosquet d'Argent",lvl:2,where:"Quête secondaire · 2016",
+  teaser:"Des sanctuaires végétaux liés à des Warframes disparues.",
+  body:["La quête mêle botanique et rituel : il faut rassembler des plantes rares pour fabriquer des apothicaires.","Elle introduit Titania et des spectres dont l'histoire reste en grande partie ouverte."],
+  rev:["heritiers"],canon:"Confirmé",wf:"titania"},
+ {id:"q-nidus",type:"Quête",title:"Le Pari de Glast",lvl:2,where:"Quête secondaire · 2016",
+  teaser:"Un duel d'influence entre deux dirigeants corpus, sur fond d'Infestation.",
+  body:["Le Tenno se retrouve pris entre Nef Anyo et Ergo Glast. L'Infestation y apparaît comme une force presque consciente.","La quête introduit Nidus, une Warframe infestée."],
+  rev:["technocyte"],canon:"Confirmé",wf:"nidus"},
+ {id:"q-revenant",type:"Quête",title:"Le Masque du Revenant",lvl:3,where:"Cetus, Plaines d'Eidolon · 2018",
+  teaser:"Les visions de l'Unum racontent le veilleur du lac.",
+  body:["Nakak vend au Tenno un masque qui montre une Warframe laissée en arrière pour empêcher l'Eidolon de revenir. Gara l'avait abattu dans le lac ; le veilleur devait l'y maintenir.","À force de frapper, le veilleur hésite. Il tend la main à l'Eidolon, qui s'en sert pour remonter, puis se jette dans le lac pour le sceller. Nakak prévient qu'un nouvel Eidolon émerge."],
+  rev:["eidolon","plaines"],canon:"Confirmé",wf:"revenant"},
+ {id:"q-sevagoth",type:"Quête",title:"L'Appel du Tempestarii",lvl:3,where:"Railjack, Veil Proxima · 2021",
+  teaser:"Un vaisseau de sauvetage fantôme et la Warframe qui le hante.",
+  body:["La capitaine corpus Vala Glarios, servante de Parvos Granum, traque le Tempestarii, un Railjack du Néant perdu pendant l'Ancienne Guerre. Le céphalon Cy appelle le vaisseau à l'aide.","L'Ombre de Sevagoth le commande. Vala est l'unique survivante d'une ancienne attaque du Tempestarii et veut se venger. Après sa défaite, l'Ombre rejoint le corps de Sevagoth pour des funérailles de navire."],
+  rev:["vieille-guerre"],canon:"Confirmé",wf:"sevagoth"},
+ {id:"q-harrow",type:"Quête",title:"Le temple de Rell",lvl:3,where:"Les Chaînes de Harrow · 2017",
+  teaser:"Le jeu de cartes de Palladino retrace le passé de Rell.",
+  body:["Palladino utilise la Donda de Rell dans un rituel en forme de jeu de cartes. La Lotus comprend que les manifestations de Rell sont de l'énergie de Transfert éclatée en plusieurs émotions.","Le Tenno les capture une à une avant d'entrer dans le temple."],
+  rev:["harrow","rell"],canon:"Confirmé",wf:"harrow"}
+];
+
+const ENT=[
+ {id:"lotus",type:"Personnage",name:"La Lotus / Natah",aff:"Sentients, puis Tenno",st:"Sous influence de l'Indifférence",audio:true,
+  sum:"Sentient infiltrée devenue mère adoptive des Tenno. Guide du joueur depuis le premier jour.",
+  bio:["Fille de Hunhow et sœur d'Erra, Natah est envoyée pour détruire les Tenno. Elle choisit de les protéger, ordonne la Réconciliation et cache les enfants dans la Réserve.","Enlevée dans Le Sacrifice, elle redevient Natah, puis reprend son essence en achevant Ballas à la fin de La Nouvelle Guerre. Elle doit alors choisir sa voix : la Lotus, Natah ou Margulis.","Depuis Les Mangeurs de Lotus, elle veille au bord du Néant, consciente d'être influencée par l'Indifférence."]},
+ {id:"ballas",type:"Personnage",name:"Ballas",aff:"Exécuteur orokin, les Sept",st:"Mort",audio:true,
+  sum:"Exécuteur, créateur des Warframes et saboteur de la paix de Tau. Achevé par la Lotus.",
+  bio:["Membre des Sept, épris de Margulis, il siège pourtant parmi ceux qui la condamnent. Il prépare sa trahison de l'Empire pendant plusieurs vies.","Il modifie les codes qui détruisent la Xénoflore de Tau et brise la paix avec les Sentients. Il fabrique les Warframes à partir du Helminth et transforme Ordan Karris en Ordis.","Laissé pour mort dans Le Sacrifice, réduit à l'état d'Amalgame, il ressurgit à la tête du Narmer. La Lotus l'achève quand, trompé par un Voile, il croit embrasser Margulis."]},
+ {id:"margulis",type:"Personnage",name:"Margulis",aff:"Archimédienne orokin",st:"Exécutée",audio:true,
+  sum:"Mère adoptive des enfants du Zariman, inventrice du Transfert. Exécutée par les Sept.",
+  bio:["Elle défend les enfants que l'Empire veut détruire, invente un rêve protecteur puis le Transfert. Les pouvoirs des enfants la rendent aveugle.","Condamnée pour apostasie et trahison, elle refuse de renier les Tenno, même contre une mort douce.","The Old Peace trouble son portrait : elle aurait pu comploter avec Ballas pour briser le traité et prendre la place des Tenno face au bourreau. Elle survit aussi comme l'une des voix possibles de la Lotus."]},
+ {id:"hunhow",type:"Personnage",name:"Hunhow",aff:"Sentients",st:"Amnésique",audio:true,
+  sum:"Seigneur sentient, père de Natah et d'Erra. Ennemi, puis allié inattendu.",
+  bio:["Brisé pendant l'Ancienne Guerre, il se réveille dans Natah et arme le Stalker dans Le Second Rêve.","Dans La Nouvelle Guerre, il s'allie au Drifter pour libérer la Lotus. Il veille ensuite sur le Stalker et lui confie Jade.","Dans Constellations, ce père qui a échoué avec ses propres enfants sacrifie sa mémoire à l'Indifférence pour sauver les fils du Stalker. Il ne reconnaît plus les Tenno."]},
+ {id:"erra",type:"Personnage",name:"Erra",aff:"Sentients",st:"Disparu",audio:true,
+  sum:"Frère de Natah, chef de l'invasion sentiente, puis allié de circonstance.",
+  bio:["Survivant de l'Ancienne Guerre, il restaure Natah et la pousse à finir la guerre.","Quand Ballas veut dévorer le soleil, Erra fait défection et guide les Tenno, avant d'être apparemment écrasé. Un Archonte porte ensuite son corps."]},
+ {id:"adis",type:"Personnage",name:"Adis",aff:"Sentients de Tau",st:"Mort",audio:true,
+  sum:"Sentient, ami d'enfance de l'Opérateur à l'Académie de Tauron.",
+  bio:["Adis étudie aux côtés de l'Opérateur pendant la paix de Tau et l'affronte en duel amical, son Hunhullus contre Excalibur Prime.","Quand la Xénoflore est détruite, il se croit trahi, blesse gravement l'Opérateur, puis use de ses dernières forces pour le ranimer. Il meurt dans ses bras en reconnaissant son erreur."]},
+ {id:"ordis",type:"Personnage",name:"Ordis",aff:"Tenno",st:"Actif",audio:true,
+  sum:"Céphalon du vaisseau du joueur. Autrefois Ordan Karris, la Bête des Os.",
+  bio:["Mercenaire orokin, Ordan attaque ses maîtres dans leur palais. Ballas le transforme en céphalon et efface ses souvenirs.","Il les retrouve pendant le long sommeil, songe à s'autodétruire, puis les purge pour rester fidèle à l'Opérateur. Parvos Granum lui propose de lui rendre son ancien moi : il refuse."]},
+ {id:"teshin",type:"Personnage",name:"Teshin",aff:"Dax orokin",st:"Actif",audio:true,
+  sum:"Guerrier Dax survivant de l'Empire, mentor méfiant envers la Lotus.",
+  bio:["Contraint par le Sceptre de Kuva, il sert d'agent double aux Reines, puis est libéré par le Tenno.","Dans The Teacher, il enseigne les mods au Tenno et reconnaît que la Lotus a eu raison de sceller ses souvenirs. Un autre Teshin, d'une histoire différente, guide le Drifter dans Duviri."]},
+ {id:"albrecht",type:"Personnage",name:"Albrecht Entrati",aff:"Famille Entrati",st:"Incertain",audio:true,
+  sum:"Savant orokin qui a étudié le Néant et fui l'Indifférence jusqu'en 1999, puis vers Tau.",
+  bio:["Patriarche des Entrati, il disparaît en laissant sa famille figée sur Deimos et Loid à son service.","Il fuit en 1999 pour éloigner l'Indifférence, qui le suit à travers le temps. Prisonnier à Höllvania, il sait que la ville tourne en boucle.","Selon The Old Peace, il a fini par s'enfuir vers le système Tau."]},
+ {id:"loid",type:"Personnage",name:"Loid",aff:"Entrati",st:"Actif",audio:true,
+  sum:"Serviteur fidèle d'Albrecht, d'abord humain, puis veillé par un Nécraloïde.",
+  bio:["Le Loid originel est le dormeur que réveillent les Tenno. Albrecht a créé un Nécraloïde pour l'accompagner après sa mort.","Il prépare les Vessels qui envoient le Drifter en 1999. Son amour pour Albrecht est la clé qui apaise l'Indifférence."]},
+ {id:"stalker",type:"Personnage",name:"Le Stalker",aff:"Aucune",st:"Père",audio:true,
+  sum:"Chasseur de Tenno, vengeur des Orokin. Autrefois Sorren, Gardien de l'Empire.",
+  bio:["Sorren survit au massacre et jure de se venger. Jade le protège, et leur amour interdit le lie à elle.","Allié de Hunhow, il hésite face à l'Opérateur dans Le Second Rêve. Dans Ombres de Jade, il perd Jade et devient père.","Dans Constellations, il affronte les guerres de ses futurs fils, Sirius et Orion, et les réunit le temps d'un dîner."]},
+ {id:"jade-p",type:"Personnage",name:"Jade",aff:"Warframe",st:"Morte",audio:false,
+  sum:"Warframe et compagne de Sorren, mère de son fils.",
+  bio:["Elle protège Sorren quand il devient une cible. Malade et mourante, elle meurt en donnant naissance à leur enfant, qui hérite de sa lumière."]},
+ {id:"umbra",type:"Personnage",name:"Excalibur Umbra",aff:"Tenno",st:"Actif",audio:false,
+  sum:"Une Warframe qui se souvient d'avoir été un homme, contraint de tuer son fils.",
+  bio:["Soldat Dax, il espionne la trahison de Ballas et paie de sa vie et de celle d'Isaah, son fils.","L'Opérateur partage son deuil dans Le Sacrifice. Dans Constellations, il rejoint le Stalker, autre père qui a perdu un fils."]},
+ {id:"reines",type:"Personnage",name:"Les Reines Jumelles",aff:"Grineer",st:"Aînée morte",audio:true,
+  sum:"Orokin survivantes qui règnent sur l'Empire grineer grâce au Kuva et à la Continuité.",
+  bio:["Rongées par le clonage, elles tentent de voler le corps de l'Opérateur. La Reine aînée meurt ; la Reine Ver s'enfuit et chasse sur Lua."]},
+ {id:"rell",type:"Personnage",name:"Rell",aff:"Enfants du Zariman",st:"En repos",audio:false,
+  sum:"Enfant du Zariman qui contint seul l'Homme dans le Mur pendant des siècles.",
+  bio:["Chassé après avoir rendu Margulis aveugle, il lie son esprit à Harrow et devient la muse du Voile Rouge.","Les Tenno le libèrent dans Les Chaînes de Harrow et reprennent sa veille."]},
+ {id:"kahl",type:"Personnage",name:"Kahl-175",aff:"Grineer libéré",st:"Actif",audio:true,
+  sum:"Lancier grineer qui arrache son Voile du Narmer et mène sa propre guerre.",
+  bio:["Il s'évade d'un Murex au-dessus de Deimos, installe sa garnison au camp du Drifter et lutte pour libérer ses frères."]},
+ {id:"parvos",type:"Personnage",name:"Parvos Granum",aff:"Corpus",st:"Actif",audio:false,
+  sum:"Fondateur de la doctrine marchande du Corpus, qui tend la main à ses fidèles depuis le Néant.",
+  bio:["Il reconnaît Ordis comme Ordan Karris et lui propose de lui rendre son ancien moi. À la fin du Tempestarii, il accueille Vala Glarios dans le Néant de Granum."]},
+ {id:"drifter",type:"Personnage",name:"Le Drifter",aff:"Tenno",st:"Actif",audio:false,
+  sum:"Version âgée de l'Opérateur, venue d'une autre réalité. Seul capable de voyager dans le temps.",
+  bio:["Né du pacte passé avec l'Homme dans le Mur lors de l'incident du Zariman, il a été prisonnier de Duviri, le royaume de ses propres traumatismes.","Il traverse La Nouvelle Guerre, puis remonte jusqu'en 1999 pour retrouver Albrecht."]},
+ {id:"homme-mur",type:"Personnage",name:"L'Homme dans le Mur",aff:"Le Néant",st:"Actif",audio:false,
+  sum:"L'Indifférence. Entité du Néant qui imite l'Opérateur et murmure aux Tenno.",
+  bio:["Rell l'a contenue pendant des siècles. Elle passe un marché avec l'Opérateur à bord du Zariman, commente ses choix et apparaît après la mort de Ballas.","Elle parle la langue du Néant, ouvre les murs sur l'abîme et commande le Murmure. Un geste d'amour l'apaise un temps."]},
+ {id:"vor",type:"Personnage",name:"Capitaine Vor",aff:"Grineer",st:"Vaincu",audio:true,sum:"Officier grineer qui détient le Tenno au début du jeu, obsédé par les secrets orokin.",bio:[]},
+ {id:"alad",type:"Personnage",name:"Alad V",aff:"Corpus",st:"Actif",audio:true,sum:"Ingénieur corpus prêt à tout pour percer la technologie des Warframes.",bio:[]},
+ {id:"nef",type:"Personnage",name:"Nef Anyo",aff:"Corpus",st:"Actif",audio:true,sum:"Dirigeant corpus qui tient Fortuna et ses ouvriers par la dette.",bio:[]},
+ {id:"baro",type:"Personnage",name:"Baro Ki'Teer",aff:"Marchand du Néant",st:"Actif",audio:true,sum:"Marchand de reliques orokin, enfant d'une colonie martienne qui vénérait Inaros.",bio:["Sa mère lui racontait la légende d'Inaros, avant que les Grineer n'anéantissent la colonie. Devant le temple assiégé, il oublie ses richesses et annonce le retour d'Inaros."]},
+ {id:"nora",type:"Personnage",name:"Nora Night",aff:"Nightwave",st:"Active",audio:true,sum:"Voix de la radio pirate Nightwave, narratrice de feuilletons à travers le système.",bio:[]},
+ {id:"thrax",type:"Personnage",name:"Dominus Thrax",aff:"Duviri",st:"Actif",audio:true,sum:"Roi fou de Duviri, figurine du passé du Drifter.",bio:[]},
+ {id:"sept",type:"Faction",name:"Les Sept",aff:"Exécuteurs orokin",st:"Effondrés",audio:false,sum:"Conseil suprême des Exécuteurs, dont Ballas, qui condamna Margulis.",bio:[]},
+ {id:"orokin",type:"Faction",name:"Orokin",aff:"Empire",st:"Effondré",audio:false,sum:"Empire doré qui domina Origine par la technologie du Néant et la Continuité.",bio:[]},
+ {id:"tenno",type:"Faction",name:"Tenno",aff:"Enfants du Zariman",st:"Actifs",audio:false,sum:"Survivants du Zariman, guerriers du Néant qui pilotent les Warframes.",bio:[]},
+ {id:"sentients",type:"Faction",name:"Sentients",aff:"Système Tau",st:"Divisés",audio:false,sum:"Machines devenues conscientes. Une partie a connu la paix grâce à la Xénoflore.",bio:[]},
+ {id:"grineer",type:"Faction",name:"Grineer",aff:"Reines Jumelles",st:"Actifs",audio:false,sum:"Empire de clones militarisés, issus des castes serviles orokin.",bio:[]},
+ {id:"corpus",type:"Faction",name:"Corpus",aff:"Guilde marchande",st:"Actifs",audio:false,sum:"Conglomérat qui considère le profit comme une religion.",bio:[]},
+ {id:"infestes",type:"Faction",name:"Infestés",aff:"Technocyte",st:"Actifs",audio:false,sum:"Fléau biomécanique. Sa souche Helminth a donné les Warframes.",bio:[]},
+ {id:"narmer",type:"Faction",name:"Narmer",aff:"Ballas",st:"Affaibli",audio:false,sum:"Culte qui efface la volonté de ses membres sous un même voile. Des fidèles subsistent.",bio:[]},
+ {id:"entrati",type:"Faction",name:"Famille Entrati",aff:"Deimos",st:"Survivants",audio:false,sum:"Lignée orokin piégée sur Deimos, au cœur des secrets d'Albrecht.",bio:[]},
+ {id:"zariman-f",type:"Faction",name:"Holdfasts",aff:"Zariman Ten Zero",st:"Actifs",audio:false,sum:"Équipage du Zariman devenu « incarnations conceptuelles », mené par Quinn.",bio:[]},
+ {id:"ostrons",type:"Faction",name:"Ostrons",aff:"Cetus",st:"Actifs",audio:false,sum:"Peuple de pêcheurs et de marchands installé au pied de la tour de l'Unum.",bio:[]},
+ {id:"unum",type:"Personnage",name:"L'Unum",aff:"Ostrons",st:"Endormie",audio:false,sum:"Figure orokin vénérée par les Ostrons, dont les visions racontent le veilleur du lac.",bio:[]},
+ {id:"solaris",type:"Faction",name:"Solaris United",aff:"Fortuna, Vénus",st:"Actifs",audio:false,sum:"Ouvriers endettés envers le Corpus, organisés en résistance.",bio:[]},
+ {id:"cavia",type:"Faction",name:"Cavia",aff:"Sanctum Anatomica",st:"Actifs",audio:false,sum:"Expériences animales d'Albrecht (Fibonacci, Bird 3, Tagfer), qui parlent la langue du Néant.",bio:[]},
+ {id:"hex",type:"Faction",name:"La Hex",aff:"Höllvania, 1999",st:"Actifs",audio:false,sum:"Six protoframes : Arthur, Aoi, Amir, Leticia, Eleanor et Quincy.",bio:[]},
+ {id:"meridian",type:"Syndicat",name:"Steel Meridian",aff:"Dissidents grineer",st:"Actif",audio:false,sum:"Anciens Grineer qui protègent les civils et les réfugiés contre l'Empire des Reines.",bio:[]},
+ {id:"hexis",type:"Syndicat",name:"Arbitres d'Hexis",aff:"Tenno",st:"Actif",audio:false,sum:"Gardiens d'un idéal martial : prouver par l'épreuve que les Tenno restent dignes.",bio:[]},
+ {id:"suda",type:"Syndicat",name:"Céphalon Suda",aff:"Céphalons",st:"Actif",audio:false,sum:"Une intelligence qui accumule le savoir et juge les Tenno à leur curiosité.",bio:[]},
+ {id:"perrin",type:"Syndicat",name:"Séquence de Perrin",aff:"Corpus dissidents",st:"Actif",audio:false,sum:"Marchands corpus qui défendent un commerce plus juste, sans renier le profit.",bio:[]},
+ {id:"voile",type:"Syndicat",name:"Voile Rouge",aff:"Fanatiques",st:"Actif",audio:false,sum:"Zélotes de la purge par le sang, dont Rell fut la muse sacrée. Palladino est leur médium.",bio:[]},
+ {id:"loka",type:"Syndicat",name:"Nouvelle Loka",aff:"Puristes",st:"Actif",audio:false,sum:"Partisans d'une humanité « pure », attachés au retour de la Terre à son état naturel.",bio:[]}
+];
+
+const WARFRAMES=[
+ {id:"excalibur",name:"Excalibur",role:"Épéiste équilibré",q:"Le Prix de Vor",src:[["Quête","Le Prix de Vor"],["Quête","The Old Peace"]],ev:["vor","warframes","paix"],
+  sum:"La Warframe emblème du jeu. Excalibur Prime était déjà la Warframe de l'Opérateur à l'Académie de Tauron. En 1999, son protoframe est Arthur, chef de la Hex."},
+ {id:"umbra-wf",name:"Excalibur Umbra",role:"Warframe consciente",q:"Le Sacrifice",src:[["Quête","Le Sacrifice"]],ev:["umbra","sacrifice","constellations"],ent:"umbra",
+  sum:"Un soldat Dax transformé par Ballas et forcé de tuer son fils Isaah. Il agit parfois de son propre chef."},
+ {id:"uriel",name:"Uriel",role:"Warframe de Tau",q:"The Old Peace",src:[["Quête","The Old Peace (2025)"]],ev:["vers-tau","paix"],
+  sum:"La Warframe que l'Opérateur contrôle par Transfert pour rejoindre l'Académie de Tauron à la fin de ses souvenirs de Tau."},
+ {id:"limbo",name:"Limbo",role:"Maître de la Faille",q:"La Théorie de Limbo",src:[["Quête","La Théorie de Limbo (2014)"]],ev:["continuite"],arch:"q-limbo",
+  sum:"Manipule la Faille, un plan parallèle. Son théorème se termine sur une erreur de calcul qui a mené au désastre."},
+ {id:"mirage",name:"Mirage",role:"Illusionniste",q:"Messages cachés",src:[["Quête","Messages cachés"]],ev:["continuite"],arch:"q-mirage",
+  sum:"Joue sur les reflets et les leurres. Sa quête avance par énigmes reçues dans la messagerie du vaisseau."},
+ {id:"inaros",name:"Inaros",role:"Roi des sables",q:"Les Sables d'Inaros",src:[["Quête","Les Sables d'Inaros (2016)"]],ev:["heritiers"],arch:"q-inaros",
+  sum:"Défenseur mort d'une colonie de Mars. Ses restes reposaient dans quatre vases sacrés, et Baro Ki'Teer annonce son retour."},
+ {id:"octavia",name:"Octavia",role:"Musicienne",q:"L'Hymne d'Octavia",src:[["Quête","L'Hymne d'Octavia (2017)"]],ev:["second-reve"],arch:"q-octavia",
+  sum:"Liée au Mandachord et à la musique de cour orokin, dans une salle de concert de Lua."},
+ {id:"harrow",name:"Harrow",role:"Prison de Rell",q:"Les Chaînes de Harrow",src:[["Quête","Les Chaînes de Harrow (2017)"]],ev:["rell","harrow"],arch:"q-harrow",
+  sum:"La Warframe à laquelle Rell lia son esprit pour monter la garde contre l'Homme dans le Mur."},
+ {id:"titania",name:"Titania",role:"Fée guerrière",q:"Le Bosquet d'Argent",src:[["Quête","Le Bosquet d'Argent (2016)"]],ev:["heritiers"],arch:"q-titania",
+  sum:"Liée à des sanctuaires végétaux et au culte d'anciennes Warframes."},
+ {id:"nidus",name:"Nidus",role:"Warframe infestée",q:"Le Pari de Glast",src:[["Quête","Le Pari de Glast (2016)"]],ev:["technocyte"],arch:"q-nidus",
+  sum:"Rappel visible de l'origine infestée des Warframes, au cœur d'une rivalité corpus."},
+ {id:"gara",name:"Gara",role:"Gardienne de verre",q:"—",src:[["Quête","Le Masque du Revenant"]],ev:["eidolon"],
+  sum:"Celle qui abattit l'Eidolon dans le lac des Plaines, qui porte depuis son nom."},
+ {id:"revenant",name:"Revenant",role:"Veilleur du lac",q:"Le Masque du Revenant",src:[["Quête","Le Masque du Revenant (2018)"]],ev:["eidolon","plaines"],arch:"q-revenant",
+  sum:"Le veilleur qui maintenait l'Eidolon au fond du lac. Il lui tendit la main, puis se sacrifia pour le sceller."},
+ {id:"sevagoth",name:"Sevagoth",role:"Ombre du Tempestarii",q:"L'Appel du Tempestarii",src:[["Quête","L'Appel du Tempestarii (2021)"]],ev:["vieille-guerre"],arch:"q-sevagoth",
+  sum:"Son Ombre commande le Tempestarii, Railjack de sauvetage perdu dans le Néant pendant l'Ancienne Guerre."},
+ {id:"kullervo",name:"Kullervo",role:"Maudit de Duviri",q:"Le Paradoxe de Duviri",src:[["Mise à jour","Le Paradoxe de Duviri (2023)"]],ev:["duviri"],
+  sum:"Figure maudite qui surgit dans les spirales de Duviri. Acrithis l'échange contre son Fléau."},
+ {id:"qorvex",name:"Qorvex",role:"Colosse radioactif",q:"Murmures dans les Murs",src:[["Quête","Murmures dans les Murs (2023)"]],ev:["murmures"],
+  sum:"Récompense des laboratoires d'Albrecht, liée à l'époque des Vessels."},
+ {id:"jade",name:"Jade",role:"Lumière et chant",q:"Ombres de Jade",src:[["Quête","Ombres de Jade (2024)"]],ev:["sorren","jade"],ent:"jade-p",
+  sum:"Compagne de Sorren, morte en donnant naissance à leur fils. Sept de ses plumes racontent son passé."},
+ {id:"cyte",name:"Cyte-09",role:"Tireur de la Hex",q:"The Hex",src:[["Quête","The Hex (2024)"]],ev:["1999"],
+  sum:"Protoframe de Quincy, qui couvre la Hex lors de la crise du réacteur de Höllvania."},
+ {id:"hex-wf",name:"Mag, Volt, Trinity, Nyx",role:"Protoframes de 1999",q:"The Hex",src:[["Quête","The Hex (2024)"]],ev:["1999"],
+  sum:"Aoi (Mag), Amir (Volt), Leticia (Trinity) et Eleanor (Nyx) : des Warframes connues retrouvent un visage humain en 1999."},
+ {id:"garuda",name:"Garuda",role:"Mentor venue du futur",q:"Constellations",src:[["Quête","Constellations (2026)"]],ev:["constellations"],
+  sum:"Son protoframe Vena guide l'un des futurs fils du Stalker et l'affronte sur le lac de la Vallée Orbis."},
+ {id:"ash",name:"Ash",role:"Assassin repenti",q:"Constellations",src:[["Leverian","Ash"],["Quête","Constellations (2026)"]],ev:["constellations","vieille-guerre"],
+  sum:"Maître de l'ordre Scoria, il laisse fuir deux frères qu'il devait tuer, puis purge les rangs de son ordre à la chute de l'Empire. Son protoframe Ryoku mentore l'autre fils du Stalker."},
+ {id:"atlas",name:"Atlas",role:"Maître de la pierre",q:"—",src:[["Leverian","Atlas"]],ev:["vieille-guerre"],
+  sum:"Il pulvérise un astéroïde qu'un culte apocalyptique avait équipé de propulseurs pour le jeter sur la Terre."},
+ {id:"ivara",name:"Ivara",role:"Chasseresse",q:"—",src:[["Leverian","Ivara"]],ev:["vieille-guerre"],
+  sum:"Elle abat le Myrmidon, un tueur de Warframes, après la mort de ses compagnons. Les Sept l'épargnent pour qu'on se souvienne d'elle."},
+ {id:"grendel",name:"Grendel",role:"Dévoreur",q:"—",src:[["Leverian","Grendel"]],ev:["continuite"],
+  sum:"Il dévore les convives du festin de l'Exécuteur Karishh et nourrit avec cette force les habitants affamés de Riddha, qui se soulèvent."},
+ {id:"lavos",name:"Lavos",role:"Geôlier transmuté",q:"—",src:[["Leverian","Lavos"]],ev:["continuite"],
+  sum:"Chargé d'exécuter le transmutateur Javi, il apprend de lui une science interdite, détruit ses geôliers et se transforme."},
+ {id:"gauss",name:"Gauss",role:"Vitesse pure",q:"—",src:[["Leverian","Gauss"]],ev:["vieille-guerre"],
+  sum:"Il distance une vague de mines sismiques pour dénouer une crise à la forteresse d'Altra, sur Cérès."},
+ {id:"nezha",name:"Nezha",role:"Flamme vengeresse",q:"—",src:[["Leverian","Nezha"]],ev:["heritiers"],
+  sum:"Il apparaît à des enfants défendant les champs de Reshantur et brûle les Corpus qui les massacraient. Les Corpus étouffent l'affaire."},
+ {id:"nova",name:"Nova",role:"Antimatière",q:"—",src:[["Leverian","Nova"]],ev:["continuite"],
+  sum:"Envoyée secourir le vaisseau de passagers Masker's Theodolite, elle tombe dans le piège du pirate Holsom Yurr."},
+ {id:"dante",name:"Dante",role:"Historien guerrier",q:"—",src:[["Leverian","Dante"]],ev:["murmures"],
+  sum:"Historien devenu guerrier, ami de Drusus. Il disparaît après avoir découvert un texte interdit dans le manoir Entrati. Galerie verrouillée par deux quêtes."},
+ {id:"rhino",name:"Rhino",role:"Rempart lourd",q:"—",src:[["Codex","Rhino"]],ev:["warframes"],
+  sum:"L'une des toutes premières Warframes du jeu. Son histoire reste surtout racontée par le Codex et les descriptions Prime."}
+];
+
+const PLACES=[
+ {id:"mercure",name:"Mercure",ctrl:"Grineer",r:.2,a:200,sum:"Premières missions du Tenno réveillé, sous la surveillance du capitaine Vor."},
+ {id:"venus",name:"Vénus",ctrl:"Corpus",r:.28,a:320,sum:"Planète glacée. Fortuna et la Vallée Orbis y abritent Solaris United ; un lac de la vallée a vu s'affronter les fils du Stalker."},
+ {id:"terre",name:"Terre",ctrl:"Grineer",r:.36,a:40,sum:"Forêts grineer, Cetus et les Plaines d'Eidolon, au pied de la tour de l'Unum. Le lac Gara Toht garde l'Eidolon."},
+ {id:"lune",name:"Lune (Lua)",ctrl:"Ruines orokin",r:.36,a:40,moon:1,sum:"Revenue du Néant pendant le Second Rêve. La Réserve des Tenno y dormait, et la Lotus y revient après la Nouvelle Guerre."},
+ {id:"mars",name:"Mars",ctrl:"Grineer",r:.44,a:135,sum:"Déserts où repose la tombe d'Inaros, et terre natale de Baro Ki'Teer."},
+ {id:"deimos",name:"Deimos",ctrl:"Infestés",r:.44,a:135,moon:1,sum:"Lune infestée du Nécralisque et de la famille Entrati. Dessous, les laboratoires d'Albrecht et le Sanctum Anatomica."},
+ {id:"ceres",name:"Cérès",ctrl:"Grineer",r:.52,a:250,sum:"Chantiers navals grineer, et la forteresse d'Altra du Leverian de Gauss."},
+ {id:"jupiter",name:"Jupiter",ctrl:"Corpus",r:.6,a:290,sum:"Cités gazeuses corpus, terrain d'Alad V et de ses expériences."},
+ {id:"saturne",name:"Saturne",ctrl:"Grineer",r:.68,a:20,sum:"Bastion grineer, cadre du feuilleton Le Loup de Saturne Six."},
+ {id:"uranus",name:"Uranus",ctrl:"Grineer",r:.76,a:110,sum:"Laboratoires sous-marins grineer, et le repaire du Stalker."},
+ {id:"neptune",name:"Neptune",ctrl:"Corpus",r:.84,a:210,sum:"La porte du Néant de Neso, franchie par le Stalker dans le Second Rêve."},
+ {id:"pluton",name:"Pluton",ctrl:"Corpus",r:.92,a:330,sum:"Bastions corpus des marges du système."},
+ {id:"eris",name:"Éris",ctrl:"Infestés",r:.98,a:65,sum:"Planète rongée par l'Infestation, l'un des foyers du fléau."},
+ {id:"neant",name:"Le Néant",ctrl:"Ruines orokin",off:1,sum:"Espace hors de la réalité, source des pouvoirs des Tenno et domaine de l'Indifférence."},
+ {id:"kuva",name:"Forteresse de Kuva",ctrl:"Grineer",off:1,sum:"Siège des Reines Jumelles, où le Kuva est extrait du Néant."},
+ {id:"zariman",name:"Zariman Ten Zero",ctrl:"Holdfasts",off:1,sum:"Le vaisseau colonial perdu, aujourd'hui accessible par le Chrysalith."},
+ {id:"duviri",name:"Duviri",ctrl:"Dominus Thrax",off:1,sum:"Royaume né des traumatismes du Drifter, prison qui suit les humeurs de son roi."},
+ {id:"hollvania",name:"Höllvania",ctrl:"La Hex",off:1,sum:"La ville de 1999, prise dans une boucle temporelle et l'épidémie du Techrot."},
+ {id:"tau",name:"Système Tau",ctrl:"Sentients",off:1,sum:"Destination des machines orokin, berceau des Sentients, de la Xénoflore et de l'Académie de Tauron. Albrecht s'y est enfui."}
+];
+
+/* ================= OUTILS ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+const entById=id=>ENT.find(e=>e.id===id);
+const evById=id=>EVENTS.find(e=>e.id===id);
+const arById=id=>ARCH.find(e=>e.id===id);
+const wfById=id=>WARFRAMES.find(e=>e.id===id);
+const plById=id=>PLACES.find(e=>e.id===id);
+const eraOf=v=>ERAS.find(e=>e.id===v.era);
+const REDUCED=matchMedia("(prefers-reduced-motion:reduce)").matches;
+const ARTIFACT_URL="https://claude.ai/artifact/Ln2WgZrf9o26MT6rLmREc1";
+let readSet=new Set();try{readSet=new Set(JSON.parse(localStorage.getItem("ao-read")||"[]"))}catch(e){}
+function saveRead(){try{localStorage.setItem("ao-read",JSON.stringify([...readSet]))}catch(e){}}
+
+/* ================= SON (synthèse WebAudio) ================= */
+let ac=null,soundOn=false;
+try{soundOn=localStorage.getItem("ao-sound")==="1"}catch(e){}
+function ctx(){if(!ac){try{ac=new (window.AudioContext||window.webkitAudioContext)()}catch(e){return null}}if(ac.state==="suspended")ac.resume();return ac}
+function tone(f1,f2,dur,type="sine",vol=.05,delay=0){
+  if(!soundOn)return;const a=ctx();if(!a)return;const t=a.currentTime+delay;
+  const o=a.createOscillator(),g=a.createGain(),flt=a.createBiquadFilter();
+  flt.type="lowpass";flt.frequency.value=3200;o.type=type;
+  o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(flt);flt.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur+.02);
+}
+const sfx={
+  tick:()=>tone(2400,1800,.04,"sine",.018),
+  nav:()=>{tone(520,880,.14,"triangle",.04);tone(1320,1760,.12,"sine",.02,.05)},
+  open:()=>{tone(330,660,.35,"sine",.035);tone(495,990,.35,"sine",.025,.06);tone(742,1480,.4,"sine",.018,.12)},
+  close:()=>tone(880,330,.2,"triangle",.03),
+  decrypt:()=>{for(let i=0;i<6;i++)tone(900+Math.random()*1600,600+Math.random()*900,.03,"square",.008,i*.05)},
+  planet:()=>{tone(180,360,.4,"sine",.04);tone(1080,1440,.25,"sine",.015,.08)}
+};
+const sb=$("#sound");
+function paintSound(){sb.setAttribute("aria-pressed",soundOn);sb.querySelector("span").textContent=soundOn?"Son actif":"Son coupé"}
+paintSound();
+sb.onclick=()=>{soundOn=!soundOn;try{localStorage.setItem("ao-sound",soundOn?"1":"0")}catch(e){}paintSound();if(soundOn){ctx();sfx.open()}};
+
+/* ================= GLYPHES / EMBLÈMES ================= */
+function glyphSVG(text){
+  const prims=["M5 1V13","M1 4H9","M1 13 5 1 9 13","M2 2 8 12","M8 2 2 12","M1 7A4 4 0 0 1 9 7","M1 7A4 4 0 0 0 9 7","M3 1H7","M1 10H9","M5 4A2 2 0 1 0 5.01 4"];
+  let x=0,out="";
+  for(const ch of String(text).toLowerCase()){
+    if(ch===" "){x+=8;continue}
+    let h=0;for(const c of ch.normalize("NFD"))h=(h*31+c.charCodeAt(0))>>>0;
+    const a=prims[h%prims.length],b=prims[(h>>3)%prims.length],c=(h>>6)%3===0?prims[(h>>9)%prims.length]:"";
+    out+=`<g class="gl" style="animation-delay:${((h%97)/97*6).toFixed(2)}s" transform="translate(${x} 0)"><path d="${a} ${b} ${c}"/></g>`;x+=12;
+  }
+  return `<svg viewBox="0 0 ${Math.max(x,1)} 14" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="square" aria-hidden="true">${out}</svg>`;
+}
+document.querySelectorAll("[data-glyph]").forEach(el=>el.innerHTML=glyphSVG(el.dataset.glyph));
+const hashOf=s=>{let h=0;for(const c of s)h=(h*131+c.charCodeAt(0))>>>0;return h};
+function sigil(id,extra=""){
+  const h=hashOf(id),n=3+(h%4),r1=14+(h>>4)%6,rot=(h>>8)%90;let pts=[];
+  for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2+rot*Math.PI/180;pts.push((22+r1*Math.cos(a)).toFixed(1)+","+(22+r1*Math.sin(a)).toFixed(1))}
+  return `<svg class="sig" ${extra} viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><circle cx="22" cy="22" r="20" opacity=".5"/><polygon points="${pts.join(" ")}"/><circle cx="22" cy="22" r="${3+(h>>12)%4}" ${h%2?'fill="currentColor"':''}/></svg>`;
+}
+/* casque stylisé de Warframe, symétrique, généré depuis l'identifiant */
+function helm(id){
+  const h=hashOf(id),R=k=>((h>>k)&15)/15;
+  const top=8+R(0)*14,cw=10+R(4)*14,sw=22+R(8)*10,jaw=14+R(12)*12,chin=96-R(16)*10,eyeY=48+R(20)*10;
+  const L=[[50-cw,top+10],[50-sw,40],[50-sw+4,70],[50-jaw,chin-10],[50,chin]];
+  const P=L.map(p=>p.join(" ")).concat(L.slice(0,-1).reverse().map(([x,y])=>[100-x,y].join(" ")));
+  const crest=R(24)>.4?`<path d="M50 ${top-6}V${top+26}"/><path d="M44 ${top}L50 ${top-8}L56 ${top}" />`:`<path d="M${50-cw/2} ${top+4}Q50 ${top-14} ${50+cw/2} ${top+4}"/>`;
+  const fins=R(28)>.5?`<path d="M${50-sw} 40L${50-sw-12} ${28+R(2)*10}"/><path d="M${50+sw} 40L${50+sw+12} ${28+R(2)*10}"/>`:"";
+  return `<svg viewBox="0 -10 100 115" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true">
+    <path d="M50 ${top}L${P.join("L")}Z"/>${crest}${fins}
+    <path d="M${50-sw+8} ${eyeY}Q50 ${eyeY+8} ${50+sw-8} ${eyeY}" stroke-width="2.4" style="filter:drop-shadow(0 0 3px #fff0c4)"/>
+    <path d="M50 ${eyeY+12}V${chin-6}" opacity=".5"/></svg>`;
+}
+
+/* ================= TOAST & PARTAGE ================= */
+let toastT;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2600)}
+function linkFor(token){
+  let framed=false;try{framed=window.self!==window.top}catch(e){framed=true}
+  return (framed?ARTIFACT_URL:location.href.split("#")[0])+"#"+token;
+}
+function share(token){
+  const url=linkFor(token);
+  const done=()=>toast("Lien copié : "+url);
+  try{navigator.clipboard.writeText(url).then(done,()=>toast(url))}catch(e){toast(url)}
+  sfx.tick();
+}
+function setHash(token){try{history.replaceState(null,"","#"+token)}catch(e){}}
+
+
+/* ================= TEXTES LONGS & RÉVÉLATIONS ================= */
+let spoilOn=false;try{spoilOn=localStorage.getItem("ao-spoil")==="1"}catch(e){}
+const paras=b=>[].concat(b||[]).map(p=>`<p>${esc(p)}</p>`).join("");
+function spoilBlock(keys){
+  if(!keys||!keys.length)return"";
+  return `<div class="reveal ${spoilOn?"open":""}"><p class="lab">Révélations</p>
+    <ul class="keys">${keys.map(k=>`<li>${esc(k)}</li>`).join("")}</ul>
+    <button class="unveil pg" type="button">◇ Afficher les révélations</button></div>`;
+}
+function bindReveal(scope){scope.querySelectorAll(".reveal .unveil").forEach(b=>b.onclick=()=>{b.closest(".reveal").classList.add("open");sfx.decrypt()})}
+const spBtn=$("#spoil");
+function paintSpoil(){spBtn.setAttribute("aria-pressed",spoilOn);spBtn.querySelector("span").textContent=spoilOn?"Révélations visibles":"Révélations masquées";document.querySelectorAll(".reveal").forEach(r=>r.classList.toggle("open",spoilOn))}
+spBtn.onclick=()=>{spoilOn=!spoilOn;try{localStorage.setItem("ao-spoil",spoilOn?"1":"0")}catch(e){}paintSpoil();sfx.tick()};
+paintSpoil();
+
+/* ================= NAVIGATION ================= */
+const ROOMS=["chronologie","carte","archives","index","warframes"];
+let room="chronologie";
+function go(r,silent){
+  if(!ROOMS.includes(r))r="chronologie";
+  if(r!=="chronologie")stopGuide();
+  room=r;
+  ROOMS.forEach(x=>{const el=$("#room-"+x),was=el.hidden;el.hidden=x!==r;if(x===r&&was)fadeIn(el);$("#tab-"+x).setAttribute("aria-selected",x===r)});
+  if(!silent){setHash(r);sfx.nav()}
+}
+document.querySelectorAll("nav.rooms button").forEach(b=>b.onclick=()=>go(b.dataset.room));
+const PREFIX={ev:"chronologie",pl:"carte",ar:"archives",en:"index",wf:"warframes"};
+function openToken(tok,fromLoad){
+  const m=/^(ev|pl|ar|en|wf)-(.+)$/.exec(tok||"");
+  if(!m){go(tok,fromLoad);return}
+  const [,p,id]=m;closeDz(true);closeFind();
+  if(p==="ev"){const k=EVENTS.findIndex(v=>v.id===id);if(k<0)return go("chronologie");go("chronologie",true);show(k,fromLoad);setHash(tok);if(!fromLoad)$("#room-chronologie").scrollIntoView({behavior:REDUCED?"auto":"smooth"})}
+  else if(p==="pl"){if(!plById(id))return go("carte");go("carte",true);selectPlace(id,fromLoad);setHash(tok);if(!fromLoad)$("#room-carte").scrollIntoView({behavior:REDUCED?"auto":"smooth"})}
+  else{go(PREFIX[p],true);({ar:openFile,en:openEnt,wf:openWf})[p](id)}
+}
+addEventListener("hashchange",()=>{const t=location.hash.slice(1);if(t)openToken(t,true)});
+
+/* compteurs */
+function count(el,n){if(REDUCED){el.textContent=n;return}let i=0;const step=()=>{i=Math.min(n,i+1);el.textContent=i;if(i<n)setTimeout(step,24)};el.textContent=0;step()}
+count($("#n-ev"),EVENTS.length);count($("#n-ar"),ARCH.length);count($("#n-en"),ENT.length);count($("#n-wf"),WARFRAMES.length);
+
+/* ================= CHRONOLOGIE ================= */
+const TLW=Math.max(1500,EVENTS.length*70),tl=$("#tl");let cur=0;
+tl.style.minWidth=TLW+"px";tl.style.setProperty("--tlw",TLW+"px");
+(function buildTL(){
+  const per=ERAS.map(e=>EVENTS.filter(v=>v.era===e.id).length),tot=per.reduce((a,b)=>a+b,0);
+  let x=0,html="";
+  ERAS.forEach((e,i)=>{
+    const w=TLW*per[i]/tot;
+    html+=`<div class="eraband" style="left:${x}px;width:${w}px"><span>${esc(e.label)}</span><small>${esc(e.sub)}</small></div>`;
+    EVENTS.filter(v=>v.era===e.id).forEach((v,j,arr)=>{
+      const nx=x+w*(j+.5)/arr.length,k=EVENTS.indexOf(v);
+      html+=`<button class="node ${k%2?"dn":"up"}" style="left:${nx}px" data-k="${k}" aria-label="${esc(v.title)}"><span class="lbl">${esc(v.title)}</span></button>`;
+    });
+    x+=w;
+  });
+  tl.innerHTML=`<div class="axis"></div>`+html;
+  tl.querySelectorAll(".node").forEach(n=>{n.onclick=()=>{stopGuide();show(+n.dataset.k)};n.onmouseenter=sfx.tick});
+  $("#era-chips").innerHTML=ERAS.map(e=>`<button class="chip pg" data-era="${e.id}" aria-pressed="false">${esc(e.label)}</button>`).join("");
+  $("#era-chips").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{stopGuide();show(EVENTS.findIndex(v=>v.era===c.dataset.era))});
+})();
+function show(k,quiet){
+  cur=Math.max(0,Math.min(EVENTS.length-1,k));const v=EVENTS[cur],era=eraOf(v);
+  tl.querySelectorAll(".node").forEach(n=>n.setAttribute("aria-current",+n.dataset.k===cur));
+  $("#era-chips").querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.era===v.era));
+  const node=tl.querySelector(`.node[data-k="${cur}"]`),sc=$("#tl-scroll");
+  sc.scrollTo({left:node.offsetLeft-sc.clientWidth/2,behavior:quiet||REDUCED?"auto":"smooth"});
+  const links=v.links.map(entById).filter(Boolean),files=ARCH.filter(a=>a.rev.includes(v.id)),
+        places=(v.place||[]).map(plById).filter(Boolean),wfs=WARFRAMES.filter(w=>w.ev.includes(v.id));
+  $("#detail").innerHTML=`
+   <div class="main">
+     <div class="when">${esc(era.label)} · ${esc(v.when)}</div>
+     <h3>${esc(v.title)}</h3>
+     <p class="sum">${esc(v.sum)}</p>
+     ${paras(v.body)}
+     ${spoilBlock(v.keys)}
+     <div class="stepper">
+       <button class="pg" id="prev" ${cur===0?"disabled":""}>◁ Précédent</button>
+       <button class="pg" id="next" ${cur===EVENTS.length-1?"disabled":""}>Suivant ▷</button>
+       <span style="font-family:var(--f-mono);font-size:12px;color:var(--mute);align-self:center;margin-left:6px">${String(cur+1).padStart(2,"0")} / ${EVENTS.length}</span>
+       <button class="share pg" data-share="ev-${v.id}">⧉ Copier le lien</button>
+     </div>
+   </div>
+   <aside>
+     <p class="lab">Sources</p>
+     <ul class="srcs">${v.src.map(s=>`<li><b>${esc(s[0])}</b><span>${esc(s[1])}</span></li>`).join("")}</ul>
+     ${links.length?`<p class="lab">Entités liées</p><div class="links" style="margin-bottom:18px">${links.map(e=>`<button class="link pg" data-go="en-${e.id}">${esc(e.name)}</button>`).join("")}</div>`:""}
+     ${places.length?`<p class="lab">Lieux</p><div class="links" style="margin-bottom:18px">${places.map(p=>`<button class="link pg" data-go="pl-${p.id}">◎ ${esc(p.name)}</button>`).join("")}</div>`:""}
+     ${wfs.length?`<p class="lab">Warframes</p><div class="links" style="margin-bottom:18px">${wfs.map(w=>`<button class="link pg" data-go="wf-${w.id}">${esc(w.name)}</button>`).join("")}</div>`:""}
+     ${files.length?`<p class="lab">Dossiers d'archives</p><div class="links">${files.map(a=>`<button class="link pg" data-go="ar-${a.id}">${esc(a.title)}</button>`).join("")}</div>`:""}
+   </aside>`;
+  fadeIn($("#detail"));
+  $("#prev").onclick=()=>{stopGuide();show(cur-1)};$("#next").onclick=()=>{stopGuide();show(cur+1)};
+  bindGo($("#detail"));
+  if(room==="chronologie"&&!quiet)setHash("ev-"+v.id);
+  if(!quiet)sfx.tick();
+}
+function fadeIn(el){if(REDUCED)return;el.classList.remove("fade");void el.offsetWidth;el.classList.add("fade")}
+function bindGo(scope){
+  bindReveal(scope);
+  scope.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{stopGuide();openToken(b.dataset.go);sfx.nav()});
+  scope.querySelectorAll("[data-share]").forEach(b=>b.onclick=()=>share(b.dataset.share));
+}
+
+/* ---------- lecture guidée ---------- */
+const G={on:false,raf:0,t0:0,dur:0};
+const canSpeak="speechSynthesis" in window;
+if(!canSpeak)$(".g-voice").hidden=true;
+function guideText(v){return v.title+". "+v.sum+" "+[].concat(v.body).join(" ")+(spoilOn&&v.keys&&v.keys.length?" Révélations. "+v.keys.join(" "):"")}
+function stopGuide(){
+  if(!G.on)return;G.on=false;cancelAnimationFrame(G.raf);
+  try{canSpeak&&speechSynthesis.cancel()}catch(e){}
+  $("#g-play").setAttribute("aria-pressed","false");$("#g-play").textContent="▶ Lecture guidée";
+  $("#g-fill").style.width="0";$("#g-txt").textContent="Lecture interrompue à l'événement "+(cur+1)+".";
+}
+function guideStep(){
+  if(!G.on)return;const v=EVENTS[cur];
+  $("#g-txt").textContent=`${cur+1} / ${EVENTS.length} · ${v.title}`;
+  const next=()=>{if(!G.on)return;if(cur>=EVENTS.length-1){stopGuide();$("#g-txt").textContent="Fin de la chronologie.";return}show(cur+1);guideStep()};
+  if($("#g-voice").checked&&canSpeak){
+    try{
+      speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance(guideText(v));u.lang="fr-FR";u.rate=1;u.pitch=.9;
+      const fr=speechSynthesis.getVoices().find(x=>/^fr/i.test(x.lang));if(fr)u.voice=fr;
+      const est=guideText(v).length*62;G.t0=performance.now();G.dur=est;
+      u.onend=()=>{cancelAnimationFrame(G.raf);setTimeout(next,500)};
+      speechSynthesis.speak(u);
+      const fill=()=>{if(!G.on)return;$("#g-fill").style.width=Math.min(100,(performance.now()-G.t0)/G.dur*100)+"%";G.raf=requestAnimationFrame(fill)};fill();
+      return;
+    }catch(e){}
+  }
+  G.t0=performance.now();G.dur=Math.max(7000,guideText(v).length*45);
+  const loop=()=>{if(!G.on)return;const p=(performance.now()-G.t0)/G.dur;$("#g-fill").style.width=Math.min(100,p*100)+"%";if(p>=1)next();else G.raf=requestAnimationFrame(loop)};
+  loop();
+}
+$("#g-play").onclick=()=>{
+  if(G.on){stopGuide();return}
+  G.on=true;$("#g-play").setAttribute("aria-pressed","true");$("#g-play").textContent="❚❚ Pause";sfx.open();
+  show(cur);guideStep();
+};
+
+document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openFind();return}
+  if(!$("#finder").hidden){findKeys(e);return}
+  if(!$("#veil").hidden){if(e.key==="Escape")closeDz();return}
+  if(/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
+  if(e.key==="/"){e.preventDefault();openFind();return}
+  if(room!=="chronologie")return;
+  if(e.key==="ArrowRight"){stopGuide();show(cur+1)}if(e.key==="ArrowLeft"){stopGuide();show(cur-1)}
+});
+
+/* ================= CARTE ================= */
+let curPlace=null;
+const evAt=id=>EVENTS.filter(v=>(v.place||[]).includes(id));
+function polar(r,a){const rad=a*Math.PI/180;return[500+Math.cos(rad)*r*440,300+Math.sin(rad)*r*250]}
+(function buildMap(){
+  const orb=PLACES.filter(p=>!p.off&&!p.moon),rings=[...new Set(orb.map(p=>p.r))];
+  let s=`<svg viewBox="0 0 1000 600" role="group" aria-label="Carte du système Origine">
+   <defs><radialGradient id="sunG"><stop offset="0" stop-color="#fff6d8"/><stop offset=".25" stop-color="#ffd27a"/><stop offset=".6" stop-color="rgba(240,170,50,.35)"/><stop offset="1" stop-color="rgba(240,170,50,0)"/></radialGradient></defs>
+   <g class="spin2" opacity=".35" fill="none" stroke="#f0bd4f"><circle cx="500" cy="300" r="62" stroke-dasharray="1 9"/><path d="M500 228A72 72 0 0 1 572 300" /></g>
+   <g class="spin" opacity=".5" fill="none" stroke="#f0bd4f" stroke-width=".8"><circle cx="500" cy="300" r="48" stroke-dasharray="30 8 2 8"/></g>
+   <circle class="sun" cx="500" cy="300" r="60"/>`;
+  rings.forEach(r=>{s+=`<ellipse class="orbit" data-r="${r}" cx="500" cy="300" rx="${r*440}" ry="${r*250}"/>`});
+  PLACES.filter(p=>!p.off).forEach(p=>{
+    let [x,y]=polar(p.r,p.a);const [px,py]=[x,y];if(p.moon){const [ox,oy]=polar(p.r+.09,p.a-14);x=ox;y=oy}
+    const n=evAt(p.id).length,rad=p.moon?5:(n>2?10:8);
+    const lx=p.moon?x+12:x,ly=p.moon?y-8:y+rad+16,anchor=p.moon?"start":"middle";
+    s+=`<g class="pl" tabindex="0" role="button" aria-pressed="false" data-pl="${p.id}" aria-label="${esc(p.name)}, ${n} événement${n>1?"s":""}">
+      ${p.moon?`<line x1="${px}" y1="${py}" x2="${x}" y2="${y}" stroke="rgba(240,189,79,.35)" stroke-dasharray="2 3"/>`:""}
+      <circle class="halo" cx="${x}" cy="${y}" r="${rad+8}" stroke-dasharray="3 4"/>
+      <circle class="core" cx="${x}" cy="${y}" r="${rad}"/>
+      <text x="${lx}" y="${ly}" text-anchor="${anchor}">${esc(p.name)}${n?` <tspan class="cnt">·${n}</tspan>`:""}</text></g>`;
+  });
+  s+=`</svg><div class="offrow"><p class="lab">Hors orbite</p>${PLACES.filter(p=>p.off).map(p=>`<button class="off pg" data-pl="${p.id}" aria-pressed="false">${esc(p.name)} <span style="color:var(--gold);font-family:var(--f-mono);font-size:11px">·${evAt(p.id).length}</span></button>`).join("")}</div>`;
+  $("#map").innerHTML=s;
+  $("#map").querySelectorAll("[data-pl]").forEach(g=>{
+    g.onclick=()=>{selectPlace(g.dataset.pl);setHash("pl-"+g.dataset.pl)};
+    g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();g.onclick()}};
+    g.onmouseenter=sfx.tick;
+  });
+})();
+function selectPlace(id,quiet){
+  const p=plById(id);if(!p)return;curPlace=id;
+  $("#map").querySelectorAll("[data-pl]").forEach(g=>g.setAttribute("aria-pressed",g.dataset.pl===id));
+  $("#map").querySelectorAll(".orbit").forEach(o=>o.classList.toggle("hot",!p.off&&+o.dataset.r===p.r));
+  const evs=evAt(id);
+  $("#place").innerHTML=`
+    <div class="ctrl">${p.off?"Hors orbite":"Orbite"} · ${esc(p.ctrl)}</div>
+    <h3>${esc(p.name)}</h3><span class="glyphs">${glyphSVG(p.name)}</span>
+    <p>${esc(p.sum)}</p>
+    <p class="lab" style="margin-top:18px">${evs.length?`Dans la chronologie (${evs.length})`:"Aucun événement de la frise ici pour l'instant"}</p>
+    <ul class="evlist">${evs.map(v=>`<li><button data-go="ev-${v.id}">${esc(v.title)}<small>${esc(eraOf(v).label)} · ${esc(v.when)}</small></button></li>`).join("")}</ul>
+    <div class="dz-tools"><button class="share pg" data-share="pl-${p.id}">⧉ Copier le lien</button></div>`;
+  fadeIn($("#place"));bindGo($("#place"));
+  if(!quiet)sfx.planet();
+}
+
+/* ================= ARCHIVES ================= */
+const TYPES=[...new Set(ARCH.map(a=>a.type))];let arType=null;
+$("#ar-chips").innerHTML=TYPES.map(t=>`<button class="chip pg" data-t="${esc(t)}" aria-pressed="false">${esc(t)}</button>`).join("");
+$("#ar-chips").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{arType=arType===c.dataset.t?null:c.dataset.t;$("#ar-chips").querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x.dataset.t===arType));renderFiles();sfx.tick()});
+$("#ar-q").oninput=renderFiles;
+function renderFiles(){
+  const q=norm($("#ar-q").value.trim());
+  const list=ARCH.filter(a=>(!arType||a.type===arType)&&(!q||norm(a.title+" "+a.teaser+" "+a.body.join(" ")+" "+a.where).includes(q)));
+  $("#files").innerHTML=list.length?list.map(a=>`
+    <button class="file bv ${readSet.has(a.id)?"read":""}" data-file="${a.id}">
+      <div class="meta"><span>${esc(a.type)}</span><span>DOS-${String(ARCH.indexOf(a)+1).padStart(3,"0")}</span></div>
+      <h4>${esc(a.title)}</h4><p>${esc(a.teaser)}</p>
+      <div class="lvl">${[1,2,3,4].map(i=>`<i class="${i<=a.lvl?"on":""}"></i>`).join("")}<span>Niveau ${a.lvl} · ${esc(a.canon)}</span></div>
+    </button>`).join(""):`<p class="empty">Aucun dossier ne correspond. Essayez un autre terme.</p>`;
+  $("#files").querySelectorAll(".file").forEach(f=>{f.onclick=()=>openFile(f.dataset.file);f.onmouseenter=sfx.tick});
+}
+renderFiles();
+
+/* ================= INDEX ================= */
+let enType=null;const ETYPES=[["Personnage","Personnages"],["Faction","Factions"],["Syndicat","Syndicats"]];
+$("#en-chips").innerHTML=ETYPES.map(([t,l])=>`<button class="chip pg" data-t="${t}" aria-pressed="false">${l}</button>`).join("");
+$("#en-chips").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{enType=enType===c.dataset.t?null:c.dataset.t;$("#en-chips").querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x.dataset.t===enType));renderIdx();sfx.tick()});
+$("#en-q").oninput=renderIdx;
+function renderIdx(){
+  const q=norm($("#en-q").value.trim());
+  const list=ENT.filter(e=>(!enType||e.type===enType)&&(!q||norm(e.name+" "+e.aff+" "+e.sum).includes(q)));
+  $("#idx").innerHTML=list.length?list.map(e=>`
+   <button class="ent bv" data-ent="${e.id}">${sigil(e.id)}<div><h4>${esc(e.name)}</h4><small>${esc(e.type)} · ${esc(e.aff)}</small><p>${esc(e.sum)}</p></div></button>`).join(""):`<p class="empty">Aucune entité ne correspond.</p>`;
+  $("#idx").querySelectorAll(".ent").forEach(f=>{f.onclick=()=>openEnt(f.dataset.ent);f.onmouseenter=sfx.tick});
+}
+renderIdx();
+
+/* ================= WARFRAMES ================= */
+$("#wf-q").oninput=renderWf;
+function renderWf(){
+  const q=norm($("#wf-q").value.trim());
+  const list=WARFRAMES.filter(w=>!q||norm(w.name+" "+w.role+" "+w.q+" "+w.sum).includes(q));
+  $("#wfs").innerHTML=list.length?list.map(w=>`
+   <button class="wf bv" data-wf="${w.id}">
+     <div class="plate"><span class="no">WF-${String(WARFRAMES.indexOf(w)+1).padStart(2,"0")}</span>${helm(w.id)}</div>
+     <div class="txt"><h4>${esc(w.name)}</h4><small>${esc(w.role)}</small><p>${esc(w.q==="—"?"Récit hors quête":"Quête : "+w.q)}</p></div>
+   </button>`).join(""):`<p class="empty">Aucune Warframe ne correspond.</p>`;
+  $("#wfs").querySelectorAll(".wf").forEach(f=>{f.onclick=()=>openWf(f.dataset.wf);f.onmouseenter=sfx.tick});
+}
+renderWf();
+
+/* ================= DOSSIER (modal) ================= */
+const audioClips={};let curAudio=null,lastFocus=null,dzRoom=null;
+function openDz(html,token){
+  stopGuide();lastFocus=document.activeElement;dzRoom=room;
+  $("#dossier").innerHTML=`<button class="x pg" id="dz-x">Fermer ✕</button>`+html+
+    `<div class="dz-tools"><button class="share pg" data-share="${token}">⧉ Copier le lien</button></div>`;
+  $("#veil").hidden=false;$("#dz-x").onclick=()=>closeDz();$("#dz-x").focus();
+  bindGo($("#dossier"));setHash(token);sfx.open();
+}
+function closeDz(silent){
+  if($("#veil").hidden)return;$("#veil").hidden=true;
+  if(curAudio){curAudio.pause();curAudio=null}
+  if(!silent){sfx.close();setHash(room);lastFocus&&lastFocus.focus()}
+}
+$("#veil").addEventListener("click",e=>{if(e.target.id==="veil")closeDz()});
+
+function scramble(el,text){
+  if(!el)return;if(REDUCED||document.documentElement.classList.contains("calm")){el.textContent=text;return}
+  const chars="◇◆△▽○●□■⟁⌬⏃⏁⏂";let f=0;const total=18;
+  const tick=()=>{f++;const n=Math.floor(text.length*f/total);
+    el.textContent=text.slice(0,n)+text.slice(n).replace(/\S/g,()=>chars[Math.random()*chars.length|0]);
+    if(f<total)requestAnimationFrame(tick);else el.textContent=text};
+  tick();
+}
+const evButtons=evs=>evs.map(v=>`<button class="link pg" data-go="ev-${v.id}">${esc(v.title)}</button>`).join("");
+function openFile(id){
+  const a=arById(id);if(!a)return;
+  readSet.add(id);saveRead();
+  const evs=a.rev.map(evById).filter(Boolean),wf=a.wf&&wfById(a.wf);
+  openDz(`
+   <span class="stamp">Classifié · Niveau ${a.lvl}</span>
+   <h3 id="dz-title">${esc(a.title)}</h3>
+   <span class="glyphs">${glyphSVG(a.title)}</span>
+   <div class="kv"><div class="holo"><span>Type</span><b>${esc(a.type)}</b></div><div class="holo"><span>Où le trouver</span><b>${esc(a.where)}</b></div><div class="holo"><span>Statut canonique</span><b>${esc(a.canon)}</b></div></div>
+   <div class="body">${a.body.map((p,i)=>`<p data-p="${i}"></p>`).join("")}</div>
+   <p class="lab" style="margin-top:22px">Événements éclairés</p>
+   <div class="links">${evButtons(evs)}${wf?`<button class="link pg" data-go="wf-${wf.id}">Warframe : ${esc(wf.name)}</button>`:""}</div>`,"ar-"+id);
+  sfx.decrypt();
+  a.body.forEach((p,i)=>setTimeout(()=>scramble($(`#dossier [data-p="${i}"]`),p),i*160));
+  renderFiles();
+}
+function openEnt(id){
+  const e=entById(id);if(!e)return;
+  const evs=EVENTS.filter(v=>v.links.includes(id)),wf=WARFRAMES.find(w=>w.ent===id);
+  openDz(`
+   <span class="stamp">${esc(e.type)}</span>
+   <div style="display:flex;gap:16px;align-items:center;margin-top:8px">${sigil(e.id,'style="width:64px;height:64px;color:var(--gold);flex:none;filter:drop-shadow(0 0 4px rgba(255,200,90,.8))"')}<h3 id="dz-title" style="margin:0">${esc(e.name)}</h3></div>
+   <span class="glyphs">${glyphSVG(e.name)}</span>
+   <div class="kv"><div class="holo"><span>Allégeance</span><b>${esc(e.aff)}</b></div><div class="holo"><span>Statut</span><b>${esc(e.st)}</b></div><div class="holo"><span>Apparitions</span><b>${evs.length} événement${evs.length>1?"s":""}</b></div></div>
+   <div class="body"><p data-p="0" class="lead"></p>${(e.bio||[]).map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+   ${evs.length||wf?`<p class="lab" style="margin-top:22px">Dans la chronologie</p><div class="links">${evButtons(evs)}${wf?`<button class="link pg" data-go="wf-${wf.id}">Fiche Warframe</button>`:""}</div>`:""}
+   ${e.type==="Personnage"?`
+   <div class="audio bv">
+     <button class="play" id="ap" ${audioClips[id]?"":"disabled"} aria-label="Écouter l'extrait">▶</button>
+     <div class="txt"><b>Transmission de ${esc(e.name)}</b><span id="ap-s">${audioClips[id]?esc(audioClips[id].name):"Aucun extrait chargé. Ajoutez un fichier audio (enregistrement personnel, extrait sous licence)."}</span></div>
+     <div class="wave" id="wave">${"<i></i>".repeat(16)}</div>
+     <label for="ap-f">Charger un extrait</label><input id="ap-f" type="file" accept="audio/*">
+   </div>`:""}`,"en-"+id);
+  scramble($('#dossier [data-p="0"]'),e.sum);
+  if(e.type==="Personnage")bindAudio(id);
+}
+function openWf(id){
+  const w=wfById(id);if(!w)return;
+  const evs=w.ev.map(evById).filter(Boolean),a=w.arch&&arById(w.arch),en=w.ent&&entById(w.ent);
+  openDz(`
+   <span class="stamp">Warframe · WF-${String(WARFRAMES.indexOf(w)+1).padStart(2,"0")}</span>
+   <div style="display:grid;grid-template-columns:110px minmax(0,1fr);gap:20px;align-items:center;margin-top:10px">
+     <div style="color:var(--gold);filter:drop-shadow(0 0 6px rgba(255,200,90,.7))">${helm(w.id)}</div>
+     <div><h3 id="dz-title" style="margin:0">${esc(w.name)}</h3><span class="glyphs" style="margin-bottom:0">${glyphSVG(w.name)}</span></div>
+   </div>
+   <div class="kv"><div class="holo"><span>Archétype</span><b>${esc(w.role)}</b></div><div class="holo"><span>Quête</span><b>${esc(w.q==="—"?"Aucune quête dédiée":w.q)}</b></div></div>
+   <div class="body"><p data-p="0"></p></div>
+   <p class="lab" style="margin-top:20px">Sources</p>
+   <ul class="srcs">${w.src.map(s=>`<li><b>${esc(s[0])}</b><span>${esc(s[1])}</span></li>`).join("")}</ul>
+   <p class="lab">Liens</p>
+   <div class="links">${evButtons(evs)}${a?`<button class="link pg" data-go="ar-${a.id}">Dossier : ${esc(a.title)}</button>`:""}${en?`<button class="link pg" data-go="en-${en.id}">Fiche : ${esc(en.name)}</button>`:""}</div>`,"wf-"+id);
+  scramble($('#dossier [data-p="0"]'),w.sum);
+}
+function bindAudio(id){
+  const btn=$("#ap"),inp=$("#ap-f"),bars=[...$("#wave").children];let raf;
+  inp.onchange=()=>{const f=inp.files[0];if(!f)return;if(audioClips[id])URL.revokeObjectURL(audioClips[id].url);audioClips[id]={url:URL.createObjectURL(f),name:f.name};btn.disabled=false;$("#ap-s").textContent=f.name+" · prêt"};
+  btn.onclick=()=>{
+    if(curAudio&&!curAudio.paused){curAudio.pause();return}
+    const a=ctx();curAudio=new Audio(audioClips[id].url);
+    let an=null;try{if(a){const s=a.createMediaElementSource(curAudio);an=a.createAnalyser();an.fftSize=64;s.connect(an);an.connect(a.destination)}}catch(e){an=null}
+    const d=an?new Uint8Array(an.frequencyBinCount):null;
+    const draw=()=>{if(an){an.getByteFrequencyData(d);bars.forEach((b,i)=>b.style.height=(15+d[i+1]/255*85)+"%")}else bars.forEach(b=>b.style.height=(20+Math.random()*70)+"%");raf=requestAnimationFrame(draw)};
+    curAudio.onplay=()=>{btn.textContent="❚❚";draw()};
+    curAudio.onpause=curAudio.onended=()=>{btn.textContent="▶";cancelAnimationFrame(raf);bars.forEach(b=>b.style.height="20%")};
+    curAudio.play().catch(()=>{$("#ap-s").textContent="Lecture impossible pour ce fichier."});
+  };
+}
+
+/* ================= RECHERCHE GLOBALE ================= */
+const INDEX=[
+  ...EVENTS.map(v=>({tok:"ev-"+v.id,g:"Événements",t:v.title,s:eraOf(v).label+" · "+v.when,txt:v.title+" "+v.sum+" "+[].concat(v.body).join(" ")+" "+v.src.map(s=>s[1]).join(" ")})),
+  ...PLACES.map(p=>({tok:"pl-"+p.id,g:"Lieux",t:p.name,s:p.ctrl,txt:p.name+" "+p.ctrl+" "+p.sum})),
+  ...ENT.map(e=>({tok:"en-"+e.id,g:"Index",t:e.name,s:e.type+" · "+e.aff,txt:e.name+" "+e.aff+" "+e.sum+" "+(e.bio||[]).join(" ")})),
+  ...WARFRAMES.map(w=>({tok:"wf-"+w.id,g:"Warframes",t:w.name,s:w.role,txt:w.name+" "+w.role+" "+w.q+" "+w.sum})),
+  ...ARCH.map(a=>({tok:"ar-"+a.id,g:"Archives",t:a.title,s:a.type+" · "+a.where,txt:a.title+" "+a.teaser+" "+a.body.join(" ")+" "+a.where}))
+].map(x=>({...x,nt:norm(x.t),ntxt:norm(x.txt)}));
+let findSel=0,findList=[];
+function openFind(){stopGuide();$("#finder").hidden=false;$("#find-q").value="";runFind();$("#find-q").focus();sfx.open()}
+function closeFind(){if($("#finder").hidden)return;$("#finder").hidden=true}
+$("#find").onclick=openFind;
+$("#finder").addEventListener("click",e=>{if(e.target.id==="finder")closeFind()});
+$("#find-q").oninput=runFind;
+function runFind(){
+  const q=norm($("#find-q").value.trim()),words=q.split(/\s+/).filter(Boolean);
+  if(!words.length){findList=INDEX.filter(x=>x.g==="Événements").slice(0,0).concat(["ev-zariman","en-ballas","pl-lune","wf-umbra-wf","ar-leverian"].map(t=>INDEX.find(x=>x.tok===t)).filter(Boolean))}
+  else findList=INDEX.map(x=>{let sc=0;for(const w of words){if(x.nt.includes(w))sc+=x.nt.startsWith(w)?6:4;else if(x.ntxt.includes(w))sc+=1;else return null}return{...x,sc}}).filter(Boolean).sort((a,b)=>b.sc-a.sc).slice(0,24);
+  findSel=0;
+  const groups={};findList.forEach((x,i)=>{(groups[x.g]=groups[x.g]||[]).push([x,i])});
+  $("#find-res").innerHTML=findList.length?(words.length?"":`<div class="grp">Suggestions</div>`)+Object.entries(groups).map(([g,arr])=>(words.length?`<div class="grp">${esc(g)}</div>`:"")+arr.map(([x,i])=>`<button role="option" data-i="${i}" aria-selected="${i===0}"><span>${esc(x.t)}<small>${esc(x.s)}</small></span></button>`).join("")).join(""):`<p class="none">Rien dans le registre pour « ${esc($("#find-q").value)} ».</p>`;
+  $("#find-res").querySelectorAll("button").forEach(b=>{b.onclick=()=>pickFind(+b.dataset.i);b.onmouseenter=()=>{findSel=+b.dataset.i;paintSel()}});
+}
+function paintSel(){$("#find-res").querySelectorAll("button").forEach(b=>{const on=+b.dataset.i===findSel;b.setAttribute("aria-selected",on);if(on)b.scrollIntoView({block:"nearest"})})}
+function pickFind(i){const x=findList[i];if(!x)return;closeFind();openToken(x.tok);sfx.nav()}
+function findKeys(e){
+  if(e.key==="Escape"){closeFind();sfx.close()}
+  else if(e.key==="ArrowDown"){e.preventDefault();findSel=Math.min(findList.length-1,findSel+1);paintSel()}
+  else if(e.key==="ArrowUp"){e.preventDefault();findSel=Math.max(0,findSel-1);paintSel()}
+  else if(e.key==="Enter"){e.preventDefault();pickFind(findSel)}
+}
+
+
+/* ================= ANIMATIONS (moteur unique, 30 i/s, pause hors écran) ================= */
+const PRIMS=["M5 1V13","M1 4H9","M1 13 5 1 9 13","M2 2 8 12","M8 2 2 12","M1 7A4 4 0 0 1 9 7","M1 7A4 4 0 0 0 9 7","M3 1H7","M1 10H9","M5 4A2 2 0 1 0 5.01 4"];
+const GLYPHS=Array.from({length:40},(_,i)=>{const h=(i*2654435761)>>>0;return new Path2D(PRIMS[h%10]+" "+PRIMS[(h>>3)%10]+((h>>6)%3===0?" "+PRIMS[(h>>9)%10]:""))});
+const DPR=()=>Math.min(1.5,devicePixelRatio||1);
+
+/* réglage animations : préférence système, puis choix mémorisé */
+let animOn=!REDUCED;try{const s=localStorage.getItem("ao-anim");if(s!==null)animOn=s==="1"}catch(e){}
+const animBtn=$("#anim");
+function paintAnim(){document.documentElement.classList.toggle("calm",!animOn);animBtn.setAttribute("aria-pressed",animOn);animBtn.querySelector("span").textContent=animOn?"Animations":"Animations coupées"}
+animBtn.onclick=()=>{animOn=!animOn;try{localStorage.setItem("ao-anim",animOn?"1":"0")}catch(e){}paintAnim();sfx.tick();kick()};
+
+/* sprites de glyphes pré-rendus (pas de shadowBlur par image) */
+function sprite(i,px,color,glow){
+  const c=document.createElement("canvas"),pad=glow?6:1;c.width=px+pad*2;c.height=px*1.4+pad*2;
+  const g=c.getContext("2d");g.translate(pad,pad);g.scale(px/10,px*1.4/14);
+  g.lineWidth=10/px;g.strokeStyle=color;if(glow){g.shadowBlur=5;g.shadowColor="#f0bd4f"}g.stroke(GLYPHS[i]);return c;
+}
+
+/* ----- fond : colonnes de glyphes ----- */
+const BG=(function(){
+  const c=$("#bg"),g=c.getContext("2d",{alpha:true});let w,h,d,cols=[],dim=[],hot=[],gs;
+  function size(){d=DPR();w=c.width=innerWidth*d;h=c.height=innerHeight*d;gs=Math.round(11*d);
+    dim=GLYPHS.map((_,i)=>sprite(i,gs,"rgba(240,189,79,1)",false));hot=GLYPHS.map((_,i)=>sprite(i,gs,"#ffe9b0",true));
+    const step=58*d;cols=[];for(let x=step*.5;x<w;x+=step){if(Math.random()<.5)continue;
+      cols.push({x,speed:(6+Math.random()*12)*d,off:Math.random()*h,seed:Math.random()*40|0,len:6+Math.random()*12|0})}}
+  size();let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{size();draw(performance.now())},150)});
+  function draw(t){
+    g.clearRect(0,0,w,h);
+    const vg=g.createRadialGradient(w*.72,h*.3,0,w*.72,h*.3,Math.max(w,h)*.7);
+    vg.addColorStop(0,"rgba(70,48,10,.22)");vg.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=vg;g.fillRect(0,0,w,h);
+    const gap=gs*1.9;
+    for(let ci=0;ci<cols.length;ci++){const col=cols[ci];
+      const y0=((t/1000*col.speed+col.off)%(h+col.len*gap))-col.len*gap;
+      for(let k=0;k<col.len;k++){
+        const y=y0+k*gap;if(y<-gap||y>h)continue;const idx=(col.seed+k*7+ci)%40;
+        if(Math.sin(t*.0017+ci*3.1+k*1.3)>.985){g.globalAlpha=.9;g.drawImage(hot[idx],col.x-gs/2-6,y-6)}
+        else{g.globalAlpha=.05+.11*(k/col.len);g.drawImage(dim[idx],col.x-gs/2-1,y-1)}
+      }}
+    g.globalAlpha=1;
+  }
+  return{draw,fps:20,last:0,visible:()=>true};
+})();
+
+/* ----- héros : diagramme holographique, lueur en une seule passe ----- */
+const HOLO=(function(){
+  const c=$("#holo"),g=c.getContext("2d"),sharp=document.createElement("canvas"),s=sharp.getContext("2d"),
+        half=document.createElement("canvas"),hf=half.getContext("2d");
+  let S=0,d=1,vis=true;
+  function size(){d=DPR();const r=c.getBoundingClientRect();S=Math.max(10,Math.round(r.width*d));c.width=c.height=sharp.width=sharp.height=S;half.width=half.height=Math.max(1,S>>1)}
+  size();try{new ResizeObserver(()=>{size();draw(performance.now())}).observe(c)}catch(e){addEventListener("resize",size)}
+  try{new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis)kick()}).observe(c)}catch(e){}
+  const filterOK=typeof g.filter==="string";
+  function scene(t){
+    const x=s;x.clearRect(0,0,S,S);x.lineCap="round";
+    const cx=S*.55,cy=S*.46,R=S*.44,L=d;
+    x.setLineDash([2*L,7*L]);x.lineDashOffset=-t*.02*L;x.lineWidth=L;
+    for(let i=0;i<5;i++){const y=S*(.18+i*.13);x.strokeStyle=`rgba(240,189,79,${.3+i*.06})`;
+      x.beginPath();x.moveTo(0,y);x.bezierCurveTo(S*.22,y,S*.3,cy+(y-cy)*.25,cx-R*.36,cy+(y-cy)*.18);x.stroke()}
+    x.setLineDash([]);
+    const a0=t*.00005;
+    x.lineWidth=1.5*L;x.strokeStyle="rgba(255,222,140,1)";x.beginPath();x.arc(cx,cy,R*.62,a0+.5,a0+.5+Math.PI*1.55);x.stroke();
+    x.lineWidth=L;x.strokeStyle="rgba(240,189,79,.6)";x.beginPath();x.arc(cx,cy,R*.58,a0+2.6,a0+2.6+Math.PI*.9);x.stroke();
+    x.save();x.translate(cx+R*.13,cy-R*.06);x.rotate(-.42+Math.sin(t*.0003)*.04);
+    x.strokeStyle="rgba(255,226,160,.8)";x.beginPath();x.ellipse(0,0,R*.46,R*.31,0,0,Math.PI*2);x.stroke();
+    x.strokeStyle="rgba(240,189,79,.4)";x.beginPath();x.ellipse(-R*.05,0,R*.3,R*.2,0,0,Math.PI*2);x.stroke();x.restore();
+    const n=30,rr=R*.8,rot=t*.00008,gsz=R*.055;
+    for(let i=0;i<n;i++){
+      const a=rot+i/n*Math.PI*2;if(((i*7)%11)===3)continue;const on=Math.sin(t*.002+i*2.3)>.93;
+      x.save();x.translate(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr);x.rotate(a+Math.PI/2);x.scale(gsz/10,gsz/14);x.translate(-5,-7);
+      x.lineWidth=1.1*L*14/gsz;x.strokeStyle=on?"#fff4d6":"rgba(240,189,79,.7)";x.stroke(GLYPHS[(i*13)%40]);x.restore();
+    }
+    x.lineWidth=L;x.beginPath();
+    const tickA=-rot*1.6+Math.PI*.2;
+    for(let i=0;i<=90;i++){const a=tickA+i/90*Math.PI*1.5,len=i%10===0?R*.06:i%5===0?R*.035:R*.018,ca=Math.cos(a),sa=Math.sin(a);
+      x.moveTo(cx+ca*R*.69,cy+sa*R*.69);x.lineTo(cx+ca*(R*.69-len),cy+sa*(R*.69-len))}
+    x.strokeStyle="rgba(240,189,79,.45)";x.stroke();
+    /* hélice : deux brins, segments regroupés par profondeur (peu d'appels de dessin) */
+    const P=u=>{const m=1-u;return[m*m*S*.06+2*m*u*S*.36+u*u*S*.98,m*m*S*.95+2*m*u*S*.38+u*u*S*.06]};
+    const steps=110,A=R*.09,ph=t*.0016,pts=[];
+    for(let i=0;i<=steps;i++){const u=i/steps,[px,py]=P(u),[qx,qy]=P(Math.min(1,u+.001)),l=Math.hypot(qx-px,qy-py)||1;pts.push([px,py,-(qy-py)/l,(qx-px)/l,u])}
+    for(const sg of[1,-1])for(let b=0;b<3;b++){
+      x.beginPath();
+      for(let i=0;i<steps;i++){const[px,py,nx,ny,u]=pts[i],[px2,py2,nx2,ny2,u2]=pts[i+1];
+        const depth=(Math.cos(u*26+ph)*sg+1)/2;if(Math.min(2,depth*3|0)!==b)continue;
+        const e=Math.sin(Math.PI*u),e2=Math.sin(Math.PI*u2),s1=Math.sin(u*26+ph)*sg,s2=Math.sin(u2*26+ph)*sg;
+        x.moveTo(px+nx*A*s1*e,py+ny*A*s1*e);x.lineTo(px2+nx2*A*s2*e2,py2+ny2*A*s2*e2)}
+      x.lineWidth=(.8+b*.5)*L;x.strokeStyle=`rgba(255,${205+b*20},${100+b*60},${.25+b*.33})`;x.stroke();
+    }
+    x.beginPath();for(let i=0;i<steps;i+=6){const[px,py,nx,ny,u]=pts[i],sv=Math.sin(u*26+ph)*A*Math.sin(Math.PI*u);x.moveTo(px+nx*sv,py+ny*sv);x.lineTo(px-nx*sv,py-ny*sv)}
+    x.lineWidth=.7*L;x.strokeStyle="rgba(240,189,79,.3)";x.stroke();
+    x.lineWidth=1.2*L;x.strokeStyle="rgba(255,220,140,.95)";x.beginPath();
+    for(let i=0;i<=120;i++){const u=i/120,px=S*.12+u*S*.8,env=Math.pow(Math.sin(Math.PI*u),2),
+      amp=(Math.sin(u*40+t*.006)*.6+Math.sin(u*97-t*.011)*.4)*Math.abs(Math.sin(t*.0009+u*3))*R*.07*env;i?x.lineTo(px,S*.93+amp):x.moveTo(px,S*.93+amp)}
+    x.stroke();
+    const ox=cx-R*.42,oy=cy+R*.36,orr=R*.12;x.strokeStyle="rgba(255,226,160,.85)";x.lineWidth=L;
+    x.beginPath();x.arc(ox,oy,orr,0,Math.PI*2);x.stroke();
+    x.beginPath();x.arc(ox,oy,orr*.55,t*.001,t*.001+Math.PI*1.2);x.stroke();
+    x.beginPath();x.moveTo(ox-orr*1.5,oy);x.lineTo(ox-orr*.7,oy);x.moveTo(ox+orr*.7,oy);x.lineTo(ox+orr*1.5,oy);x.moveTo(ox+orr*.7,oy-orr*.7);x.lineTo(cx-R*.15,cy+R*.1);x.stroke();
+    const pulse=.75+Math.sin(t*.002)*.25,rg=x.createRadialGradient(cx,cy,0,cx,cy,R*.22);
+    rg.addColorStop(0,`rgba(255,244,210,${.95*pulse})`);rg.addColorStop(.12,`rgba(255,210,110,${.55*pulse})`);rg.addColorStop(1,"rgba(240,170,50,0)");
+    x.fillStyle=rg;x.beginPath();x.arc(cx,cy,R*.22,0,Math.PI*2);x.fill();
+    x.save();x.translate(cx,cy);x.rotate(Math.PI/4+rot*2);x.strokeStyle="#fff4d6";x.lineWidth=1.2*L;x.strokeRect(-R*.045,-R*.045,R*.09,R*.09);x.restore();
+  }
+  function draw(t){
+    scene(t);g.clearRect(0,0,S,S);
+    /* bloom : copie demi-résolution floutée, ajoutée sous le tracé net */
+    hf.clearRect(0,0,half.width,half.height);hf.drawImage(sharp,0,0,half.width,half.height);
+    g.globalCompositeOperation="lighter";
+    if(filterOK){g.filter=`blur(${Math.round(5*d)}px)`;g.drawImage(half,0,0,S,S);g.filter="none"}
+    else{g.globalAlpha=.5;g.drawImage(half,-2,-2,S+4,S+4);g.globalAlpha=1}
+    g.drawImage(sharp,0,0);g.globalCompositeOperation="source-over";
+  }
+  return{draw,fps:30,last:0,visible:()=>vis};
+})();
+
+/* ----- boucle unique ----- */
+let raf=0;
+function loop(t){
+  raf=0;if(document.hidden||!animOn)return;
+  for(const L of [BG,HOLO]){if(!L.visible())continue;if(t-L.last>=1000/L.fps-2){L.last=t;L.draw(t)}}
+  raf=requestAnimationFrame(loop);
+}
+function kick(){if(!raf){if(animOn)raf=requestAnimationFrame(loop);else{BG.draw(12000);HOLO.draw(12000)}}}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)kick()});
+paintAnim();BG.draw(12000);HOLO.draw(12000);kick();
+
+
+/* démarrage */
+show(0,true);
+selectPlace("terre",true);
+(function(){const t=location.hash.slice(1);if(t)openToken(t,true);else go("chronologie",true)})();
+
+</script>
+</body>
+</html>

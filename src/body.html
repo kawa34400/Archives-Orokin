@@ -1,0 +1,141 @@
+
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header class="top">
+    <div class="bar">
+      <a class="brand" href="#chronologie" aria-label="Archives Orokin, accueil">
+        <svg width="30" height="30" viewBox="0 0 40 40" fill="none" stroke="currentColor" style="color:var(--gold)"><circle cx="20" cy="20" r="17"/><rect x="8" y="8" width="24" height="24" transform="rotate(45 20 20)"/><circle cx="20" cy="20" r="4" fill="currentColor"/></svg>
+        <b>Archives Orokin</b>
+      </a>
+      <nav class="rooms" role="tablist" aria-label="Salles">
+        <button class="pg" role="tab" data-room="chronologie" id="tab-chronologie">Chronologie</button>
+        <button class="pg" role="tab" data-room="carte" id="tab-carte">Carte</button>
+        <button class="pg" role="tab" data-room="archives" id="tab-archives">Archives</button>
+        <button class="pg" role="tab" data-room="index" id="tab-index">Index</button>
+        <button class="pg" role="tab" data-room="warframes" id="tab-warframes">Warframes</button>
+      </nav>
+      <div class="bar-tools">
+        <button class="sound bv" id="find" aria-label="Rechercher dans tout le registre"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="5"/><path d="M11 11 15 15"/></svg><span>Rechercher</span><kbd>Ctrl K</kbd></button>
+        <button class="sound bv" id="sound" aria-pressed="false"><i></i><span>Son coupé</span></button>
+        <button class="sound bv" id="spoil" aria-pressed="false"><i></i><span>Révélations masquées</span></button>
+        <button class="sound bv" id="anim" aria-pressed="true"><i></i><span>Animations</span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Système Origine · Registre du Vitruvien</div>
+      <h1>Ce qui fut <em>avant</em> le Réveil</h1>
+      <svg class="sweep" viewBox="0 0 520 9" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sw" x1="0" x2="1"><stop offset="0" stop-color="#ffe9b0"/><stop offset=".55" stop-color="#f0bd4f" stop-opacity=".6"/><stop offset="1" stop-color="#f0bd4f" stop-opacity="0"/></linearGradient></defs><path d="M0 4.5 9 0 18 4.5 9 9Z" fill="#ffe9b0" style="filter:drop-shadow(0 0 4px #f0bd4f)"/><path d="M22 3.6H330L352 1.5 520 4.5 352 7.5 330 5.4H22Z" fill="url(#sw)"/></svg>
+      <span class="glyphs" data-glyph="avant le reveil"></span>
+      <p class="lede">Le récit de Warframe est éparpillé entre quêtes, fragments Céphalon, entrées du Codex, Leverian et transmissions. Ce registre le remet dans l'ordre : une frise des ères, une carte du système, les dossiers sources et l'index de ceux qui l'ont façonné.</p>
+      <div class="stats">
+        <div class="holo"><b id="n-ev">0</b><span>Événements</span></div>
+        <div class="holo"><b id="n-ar">0</b><span>Dossiers</span></div>
+        <div class="holo"><b id="n-en">0</b><span>Entités</span></div>
+        <div class="holo"><b id="n-wf">0</b><span>Warframes</span></div>
+      </div>
+    </div>
+    <canvas class="seal" id="holo" aria-hidden="true"></canvas>
+  </div>
+
+  <!-- CHRONOLOGIE -->
+  <section class="room" id="room-chronologie" role="tabpanel" aria-labelledby="tab-chronologie">
+    <div class="room-head">
+      <div>
+        <h2>Chronologie du système Origine</h2>
+        <span class="glyphs" data-glyph="chronologie"></span>
+        <p>La frise suit l'ordre interne de l'histoire, pas celui des sorties : The Old Peace (2025) se joue ainsi avant l'Ancienne Guerre. Les révélations majeures sont masquées par défaut.</p>
+      </div>
+      <div class="chips" id="era-chips"></div>
+    </div>
+    <div class="guide bv" id="guide">
+      <button class="pg" id="g-play" aria-pressed="false">▶ Lecture guidée</button>
+      <label class="g-voice"><input type="checkbox" id="g-voice"> Narration vocale</label>
+      <div class="g-bar" aria-hidden="true"><i id="g-fill"></i></div>
+      <span class="g-txt" id="g-txt">Parcourt la frise d'un événement à l'autre.</span>
+    </div>
+    <div class="tl-scroll bv" id="tl-scroll"><div class="tl" id="tl"></div></div>
+    <div class="detail holo" id="detail" aria-live="polite"></div>
+  </section>
+
+  <!-- CARTE -->
+  <section class="room" id="room-carte" role="tabpanel" aria-labelledby="tab-carte" hidden>
+    <div class="room-head">
+      <div>
+        <h2>Carte du système Origine</h2>
+        <span class="glyphs" data-glyph="origine"></span>
+        <p>Chaque monde affiche le nombre d'événements de la frise qui s'y déroulent. Les lieux hors orbite sont reliés au Néant.</p>
+      </div>
+    </div>
+    <div class="map-wrap">
+      <div class="map bv" id="map"></div>
+      <div class="place holo" id="place" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ARCHIVES -->
+  <section class="room" id="room-archives" role="tabpanel" aria-labelledby="tab-archives" hidden>
+    <div class="room-head">
+      <div>
+        <h2>Archives classifiées</h2>
+        <span class="glyphs" data-glyph="archives"></span>
+        <p>Chaque dossier décrit une source du jeu, ce qu'elle révèle et où la trouver. Le niveau indique à quel point l'information est enfouie. Les dossiers déjà ouverts sont marqués ◇.</p>
+      </div>
+    </div>
+    <div class="tools">
+      <div class="search-w bv"><input class="search" id="ar-q" type="search" placeholder="Filtrer : Margulis, Kuva, Zariman…" aria-label="Filtrer les archives"></div>
+      <div class="chips" id="ar-chips"></div>
+    </div>
+    <div class="files" id="files"></div>
+  </section>
+
+  <!-- INDEX -->
+  <section class="room" id="room-index" role="tabpanel" aria-labelledby="tab-index" hidden>
+    <div class="room-head">
+      <div>
+        <h2>Index des personnages et factions</h2>
+        <span class="glyphs" data-glyph="index"></span>
+        <p>Chaque fiche renvoie aux événements de la chronologie où l'entité apparaît. Les fiches de personnages ont un emplacement audio pour y charger vos propres extraits.</p>
+      </div>
+    </div>
+    <div class="tools">
+      <div class="search-w bv"><input class="search" id="en-q" type="search" placeholder="Filtrer : Ballas, Corpus, Sentient…" aria-label="Filtrer l'index"></div>
+      <div class="chips" id="en-chips"></div>
+    </div>
+    <div class="idx" id="idx"></div>
+  </section>
+
+  <!-- WARFRAMES -->
+  <section class="room" id="room-warframes" role="tabpanel" aria-labelledby="tab-warframes" hidden>
+    <div class="room-head">
+      <div>
+        <h2>Galerie des Warframes</h2>
+        <span class="glyphs" data-glyph="warframes"></span>
+        <p>Les Warframes dont l'histoire est racontée dans le jeu, par une quête, le Leverian ou le Codex. Chaque fiche renvoie à sa quête et aux événements qu'elle éclaire.</p>
+      </div>
+    </div>
+    <div class="tools">
+      <div class="search-w bv"><input class="search" id="wf-q" type="search" placeholder="Filtrer : Inaros, Faille, Duviri…" aria-label="Filtrer les Warframes"></div>
+    </div>
+    <div class="wfs" id="wfs"></div>
+  </section>
+
+  <footer>
+    <p>Projet de fans non officiel. Warframe et tous ses éléments appartiennent à Digital Extremes. Les textes de ce registre sont des résumés rédigés pour le site ; aucun dialogue du jeu n'y est reproduit.</p>
+    <p class="glyphs" data-glyph="tenno"></p>
+  </footer>
+</div>
+
+<div class="veil" id="veil" hidden><div class="dossier bv" id="dossier" role="dialog" aria-modal="true" aria-labelledby="dz-title"></div></div>
+
+<div class="veil" id="finder" hidden>
+  <div class="find bv" role="dialog" aria-modal="true" aria-label="Recherche globale">
+    <div class="find-in"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="7" r="5"/><path d="M11 11 15 15"/></svg>
+      <input id="find-q" type="search" placeholder="Événement, personnage, Warframe, planète…" aria-label="Rechercher" autocomplete="off"><kbd>Échap</kbd></div>
+    <div class="find-res" id="find-res" role="listbox"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
